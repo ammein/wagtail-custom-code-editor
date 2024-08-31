@@ -1,0 +1,46 @@
+{% load wagtailadmin_tags custom_code_editor_helper %}
+<div class="editor-container" {% for k, v in widget.attrs.items %}{{k}}="{{v}}"{%endfor%}>
+  {% if widget.enable_modes %}
+  <div class="dropdown" data-custom-code-editor-target="dropdown">
+    <button class="button-dropdown result" data-custom-code-editor-target="modeDropdown" data-action="click->custom-code-editor#toggleModes:prevent:stop">{% icon name="arrow-down" classname="icon-ace" title="Modes" %}</button>
+    <div class="dropdown-content" style="display: none;" data-custom-code-editor-target="modes">
+      <input type="text" placeholder="Search..." class="my-input search-bar" data-action="input->custom-code-editor#searchMode">
+      <ul>  
+        {% for mode in widget.modes %}
+          <li {% if mode.title %}data-title="{{ mode.title }}"{% endif %} data-name="{{ mode.name | lower }}" data-custom-code-editor-target="modeList" data-action="click->custom-code-editor#setMode:stop" data-custom-code-editor-mode-param="{{ mode.name }}">{% if mode.title %}{{ mode.title }}{% else %}{{ mode.name | title }}{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+  {% if widget.label %}
+    <label for="{{ widget.attrs.id }}"><strong>{{widget.label}}:</strong></label>
+  {% endif %}
+  <textarea id="{{ widget.attrs.id }}" style="width:{{ widget.width }};height:{{ widget.height }};" name="{{ widget.name }}"
+    {% if widget.required %}required=""{% endif %} data-custom-code-editor-target="input">{{ widget.value }}</textarea>
+  <div class="code-snippet-wrapper editor" id="{{ widget.attrs.id }}-wrapper" data-custom-code-editor-target="editor"></div>
+  {% if widget.enable_options %}
+  <div class="options-config">
+    <button class="button-options" title="Adjust Options" data-custom-code-editor-target="optionsButton" data-action="click->custom-code-editor#toggleOptions:prevent">
+      {% icon name="cog" classname="icon-ace" title="Adjust Options" %}
+    </button>
+    <div class="options-container" style="display:none;" data-custom-code-editor-target="optionsContainer">
+      <div class="options-inner">
+        <div class="search-area">
+          <input type="text" class="search-bar my-options" placeholder="Search..." data-action="input->custom-code-editor#searchOptions">
+        </div>
+        <div class="button-container">
+          <button class="copy-options" title="Copy All Changes Options" data-custom-code-editor-target="copy" data-action="custom-code-editor#copyToClipboard">{% icon name="copy" classname="icon-ace" title="Copy Options" %}</button>
+          <button class="undo-options" title="Undo" data-custom-code-editor-target="undo">{% icon name="history" classname="icon-ace" title="Undo Options" %}</button>
+          <span style="display:none;" data-custom-code-editor-target="notification"></span>
+        </div>
+        <div class="line-category"></div>
+        <ul>
+          {# Options List Here #}
+          {% generate_options_lists widget.options %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
