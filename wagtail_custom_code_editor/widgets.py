@@ -48,12 +48,12 @@ class CustomCodeEditorWidget(widgets.Widget):
 
         # Merge by key 'name' matches the value of options
         self.options: Dict[str, Any] = {d['name']: d for d in
-                                        wagtail_custom_code_editor_settings.OPTIONS_TYPES + options} if bool(
-            options) is not False else wagtail_custom_code_editor_settings.OPTIONS_TYPES
+                                        getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES") + options} if bool(
+            options) is not False else getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES")
 
         # Merge by key 'name' matches the value of modes
         self.modes: List[Dict[str, str]] = list(
-            {d['name']: d for d in wagtail_custom_code_editor_settings.MODES + modes}.values()) if modes is not None else wagtail_custom_code_editor_settings.MODES
+            {d['name']: d for d in getattr(wagtail_custom_code_editor_settings, "MODES") + modes}.values()) if modes is not None else getattr(wagtail_custom_code_editor_settings, "MODES")
 
         # See if mode not available in modes
         if len([d for d in self.modes if d['name'] == self.mode]) == 0:
@@ -112,14 +112,14 @@ class CustomCodeEditorWidget(widgets.Widget):
         else:
             # Upload all extensions by default
             ext_files = glob.glob('wagtail_custom_code_editor/ace/ext-*.js',
-                                  root_dir=wagtail_custom_code_editor_settings.STATIC_DIR)
+                                  root_dir=getattr(wagtail_custom_code_editor_settings, "STATIC_DIR"))
             for ext in ext_files:
                 js.append(ext)
 
         # For worker if available
         if self.useworker:
             worker_files = glob.glob('wagtail_custom_code_editor/ace/worker-*.js',
-                                     root_dir=wagtail_custom_code_editor_settings.STATIC_DIR)
+                                     root_dir=getattr(wagtail_custom_code_editor_settings, 'STATIC_DIR'))
             for worker in worker_files:
                 valid = re.search(r'(?=worker-).*(?=.js)', worker)
                 if valid:
