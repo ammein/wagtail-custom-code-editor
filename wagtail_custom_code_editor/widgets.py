@@ -10,6 +10,11 @@ from wagtail.widget_adapters import WidgetAdapter
 from wagtail.telepath import register
 from .settings import wagtail_custom_code_editor_settings
 from .types import DropdownConfig
+from .files import (
+    EXTENSIONS,
+    MODES,
+    WORKERS
+)
 
 
 class CustomCodeEditorWidget(widgets.Widget):
@@ -17,8 +22,8 @@ class CustomCodeEditorWidget(widgets.Widget):
 
     def __init__(
             self,
-            mode=None,
-            theme=None,
+            mode="html",
+            theme="chrome",
             width="100%",
             height="300px",
             font_size=None,
@@ -111,21 +116,17 @@ class CustomCodeEditorWidget(widgets.Widget):
                     js.append(extension)
         else:
             # Upload all extensions by default
-            ext_files = glob.glob('wagtail_custom_code_editor/ace/ext-*.js',
-                                  root_dir=getattr(wagtail_custom_code_editor_settings, "STATIC_DIR"))
-            for ext in ext_files:
-                js.append(ext)
+            for ext in EXTENSIONS:
+                js.append("wagtail_custom_code_editor/ace/%s" % ext)
 
         # For worker if available
         if self.useworker:
-            worker_files = glob.glob('wagtail_custom_code_editor/ace/worker-*.js',
-                                     root_dir=getattr(wagtail_custom_code_editor_settings, 'STATIC_DIR'))
-            for worker in worker_files:
+            for worker in WORKERS:
                 valid = re.search(r'(?=worker-).*(?=.js)', worker)
                 if valid:
                     worker_val = re.search(r'(?!worker-)\w+(?!.js)$', valid.group())
                     if worker_val and worker_val.group() in save_modes:
-                        js.append(worker)
+                        js.append("wagtail_custom_code_editor/ace/%s" % worker)
 
         css = {"screen": ["wagtail_custom_code_editor/css/code.css"]}
 

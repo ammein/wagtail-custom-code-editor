@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_custom_code_editor.validators import CustomCodeEditorDecoder
+from .validators import CustomCodeEditorDecoder
 
 
 class CustomCodeEditorField(models.JSONField):

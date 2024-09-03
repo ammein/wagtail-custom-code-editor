@@ -6,10 +6,9 @@ from wagtail_custom_code_editor.edit_handlers import CustomCodeEditorPanel
 from wagtail_custom_code_editor.fields import CustomCodeEditorField
 
 
-
 class CustomCodeEditorPage(Page):
     code = CustomCodeEditorField()
-    secondcode= CustomCodeEditorField()
+    secondcode = CustomCodeEditorField()
 
     content_panels = Page.content_panels + [
         CustomCodeEditorPanel('code', mode='html', theme='monokai'),

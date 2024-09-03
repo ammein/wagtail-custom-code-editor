@@ -1,5 +1,5 @@
 from wagtail.admin.panels import FieldPanel
-from wagtail_custom_code_editor.widgets import CustomCodeEditorWidget
+from .widgets import CustomCodeEditorWidget
 
 
 class CustomCodeEditorPanel(FieldPanel):

@@ -2,9 +2,9 @@ from __future__ import annotations
 from django import forms
 from wagtail.blocks import FieldBlock
 from django.utils.translation import gettext_lazy as _
-from wagtail_custom_code_editor.types import CustomCodeEditorOptionsDict, DropdownConfig
-from wagtail_custom_code_editor.validators import CustomCodeEditorDecoder
-from wagtail_custom_code_editor.widgets import CustomCodeEditorWidget
+from .types import DropdownConfig
+from .validators import CustomCodeEditorDecoder
+from .widgets import CustomCodeEditorWidget
 
 
 class CustomCodeEditorBlock(FieldBlock):
@@ -30,7 +30,7 @@ class CustomCodeEditorBlock(FieldBlock):
             attrs=None,
             **kwargs,
     ):
-        self._ace_options: CustomCodeEditorOptionsDict = {
+        self._ace_options = {
             "mode": mode,
             "theme": theme,
             "width": width,
@@ -51,4 +51,3 @@ class CustomCodeEditorBlock(FieldBlock):
 
     class Meta:
         icon = 'code'
-
