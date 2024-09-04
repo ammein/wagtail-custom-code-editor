@@ -5,7 +5,6 @@ from django.test.signals import setting_changed
 
 DEFAULTS = {
     "EMMET_URL": "https://cloud9ide.github.io/emmet-core/emmet.js",
-    "STATIC_DIR": os.path.join(os.path.dirname(__file__), 'static'),
     # MODES
     "MODES": [
         {

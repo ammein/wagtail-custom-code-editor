@@ -75,7 +75,7 @@ def generate_options_lists(options: List[Dict]):
                     html += f"""
                             <li id='{option.get('name')}' class='lists-inputs' data-custom-code-editor-target='optionList' data-category='{option.get('category').replace('-', ' ')}'>
                                 <label for='{option.get('name')}'>{label.capitalize()} :</label>
-                                <select name='{option.get('name')}' data-custom-code-editor-target='options' data-action='change->custom-code-editor#{'dropdownOnChange' if isinstance(option.get('value'), object) else 'dropdownObjectOnChange'}'>
+                                <select name='{option.get('name')}' {"data-default-value='" + (json.dumps(option.get('defaultValue')) if isinstance(option.get('defaultValue'), bool) else option.get('defaultValue')) + "'" if option.get('defaultValue') is not None else ''} data-custom-code-editor-target='options' data-action='change->custom-code-editor#{'dropdownOnChange' if isinstance(option.get('value'), object) else 'dropdownObjectOnChange'}'>
                                     {options_html}
                                 </select>
                                 {help_html}
@@ -90,7 +90,7 @@ def generate_options_lists(options: List[Dict]):
                     html += f"""
                             <li id='{option.get('name')}' class='lists-inputs' data-custom-code-editor-target='optionList' data-category='{option.get('category').replace('-', ' ')}'>
                                 <label for='{option.get('name')}'>{label.capitalize()} :</label>
-                                <input name='{option.get('name')}' data-custom-code-editor-target='options' max='{option.get('value').get('max')}' min='{option.get('value').get('min')}' step='{option.get('value').get('step')}' type='range' class='range-slider__range' data-action='input->custom-code-editor#sliderOnChange blur->custom-code-editor#sliderOnFocusOut'>
+                                <input name='{option.get('name')}' {"data-default-value='" + json.dumps(option.get('defaultValue')) + "'" if option.get('defaultValue') is not None else ''} data-custom-code-editor-target='options' max='{option.get('value').get('max')}' min='{option.get('value').get('min')}' {"step='" + option.get('value').get('step') + "'" if option.get('value').get('step') else ""} type='range' class='range-slider__range' data-action='input->custom-code-editor#sliderOnChange blur->custom-code-editor#sliderOnFocusOut'>
                                 <output class='range-slider__value' style='display:none;'></output>
                                 {help_html}
                             </li>
@@ -99,7 +99,7 @@ def generate_options_lists(options: List[Dict]):
                     html += f"""
                             <li id='{option.get('name')}' class='lists-inputs' data-custom-code-editor-target='optionList' data-category='{option.get('category').replace('-', ' ')}'>
                                 <label for='{option.get('name')}'>{label.capitalize()} :</label>
-                                <input name='{option.get('name')}' data-custom-code-editor-target='options' type='number' data-action='input->custom-code-editor#sliderOnChange' value='0'>
+                                <input name='{option.get('name')}' {"data-default-value='" + json.dumps(option.get('defaultValue')) + "'" if option.get('defaultValue') is not None else ''} data-custom-code-editor-target='options' type='number' data-action='input->custom-code-editor#sliderOnChange' value='0'>
                                 {help_html}
                             </li>
                             """
@@ -112,7 +112,7 @@ def generate_options_lists(options: List[Dict]):
                 html += f"""
                         <li id='{option.get('name')}' class='lists-inputs' data-custom-code-editor-target='optionList' data-category='{option.get('category').replace('-', ' ')}'>
                             <label for='{option.get('name')}'>{label.capitalize()} :</label>
-                            <input name='{option.get('name')}' data-custom-code-editor-target='options' type='checkbox' class='error' data-action='custom-code-editor#checkboxOnChange'>
+                            <input name='{option.get('name')}' {"data-default-value='" + json.dumps(option.get('defaultValue')) + "'" if option.get('defaultValue') is not None else ''} data-custom-code-editor-target='options' type='checkbox' class='error' data-action='custom-code-editor#checkboxOnChange'>
                             {help_html}
                         </li>
                         """

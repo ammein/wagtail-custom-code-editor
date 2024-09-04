@@ -8,6 +8,7 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
         mode: String,
         modes: Array,
         options: Array,
+        originalOptions: Object,
         dropdownConfig: {
             defaultValue: {},
             type: Object
@@ -191,6 +192,8 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
                 case (/select/g).test(dom.type):
                     if (this.editor.getOptions().hasOwnProperty(dom.name)){
                         Array.from(dom.children).forEach((option) => {
+                            let defaultVal = dom.dataset["defaultValue"]
+                            // Option Value Cleaning
                             switch(option.value){
                                 case "true":
                                     option.value = true;
@@ -200,9 +203,23 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
                                     option.value = false;
                                     break;
                             }
-                            if (option.value === this.editor.getOptions()[dom.name].toString()) {
+                            // Default Value Cleaning
+                            switch (defaultVal){
+                                case "true":
+                                    defaultVal = true;
+                                    break;
+
+                                case "false":
+                                    defaultVal = false;
+                                    break
+                            }
+                            if (!dom.hasAttribute('data-default-value') && option.value === this.editor.getOptions()[dom.name].toString()) {
                                 option.setAttribute('selected', true)
                                 this.ace.saveValue[dom.name] = option.value.toString()
+                            } else if(dom.hasAttribute('data-default-value')) {
+                                dom.value = defaultVal;
+                                this.ace.saveValue[dom.name] = defaultVal.toString();
+                                this.editor.setOption(dom.name, defaultVal)
                             }
                         })
                     }
@@ -210,21 +227,42 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
 
                 case (/range/g).test(dom.type):
                     value = (this.editor.getOptions().hasOwnProperty(dom.name)) ? this.editor.getOptions()[dom.name] : 0
-                    dom.setAttribute('value', value);
-                    this.ace.saveValue[dom.name] = Number(this.editor.getOptions()[dom.name]);
+                    if(!dom.hasAttribute('data-default-value')) {
+                        dom.setAttribute('value', value);
+                        this.ace.saveValue[dom.name] = Number(this.editor.getOptions()[dom.name]);
+                    } else if(dom.hasAttribute('data-default-value')) {
+                        dom.setAttribute('value', dom.dataset["defaultValue"]);
+                        this.ace.saveValue[dom.name] = Number(dom.dataset["defaultValue"]);
+                        this.editor.setOption(dom.name, Number(dom.dataset["defaultValue"]));
+                    }
                     break;
 
                 case (/number/g).test(dom.type):
                     value = (this.editor.getOptions().hasOwnProperty(dom.name)) ? this.editor.getOptions()[dom.name] : 0;
-                    dom.setAttribute('value', value);
-                    this.ace.saveValue[dom.name] = parseFloat(this.editor.getOptions()[dom.name]);
+                    if (!dom.hasAttribute('data-default-value')) {
+                        dom.setAttribute('value', value);
+                        this.ace.saveValue[dom.name] = parseFloat(this.editor.getOptions()[dom.name]);
+                    } else if(dom.hasAttribute('data-default-value')) {
+                        dom.setAttribute('value', dom.dataset["defaultValue"]);
+                        this.ace.saveValue[dom.name] = parseFloat(dom.dataset["defaultValue"]);
+                        this.editor.setOption(dom.name, parseFloat(dom.dataset["defaultValue"]));
+                    }
                     break;
 
                 case (/checkbox/g).test(dom.type):
-                    if (this.editor.getOptions().hasOwnProperty(dom.name) && Boolean(this.editor.getOptions()[dom.name])) {
+                    if (!dom.hasAttribute('data-default-value') && this.editor.getOptions().hasOwnProperty(dom.name) && Boolean(this.editor.getOptions()[dom.name])) {
                         dom.setAttribute('checked', Boolean(this.editor.getOptions()[dom.name]))
+                        this.ace.saveValue[dom.name] = Boolean(this.editor.getOptions()[dom.name])
+                        return;
+                    } else if(dom.hasAttribute('data-default-value')) {
+                        if(JSON.parse(dom.dataset["defaultValue"])){
+                            dom.setAttribute('checked', JSON.parse(dom.dataset["defaultValue"]))
+                        }
+                        this.ace.saveValue[dom.name] = JSON.parse(dom.dataset["defaultValue"])
+                        this.editor.setOption(dom.name, JSON.parse(dom.dataset["defaultValue"]))
+                    } else {
+                        this.ace.saveValue[dom.name] = Boolean(this.editor.getOptions()[dom.name])
                     }
-                    this.ace.saveValue[dom.name] = Boolean(this.editor.getOptions()[dom.name])
                     break;
             }
         })
@@ -236,7 +274,7 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
         Array.from(this.optionsTargets).forEach((dom) => {
             switch(true) {
                 case (/checkbox/g).test(dom.type):
-                    if(Boolean(dom.checked) !== this.ace.saveValue[dom.name]) {
+                    if(JSON.parse(dom.checked) !== this.ace.saveValue[dom.name]) {
                         value[dom.name] = dom.checked
                     }
                     break;
@@ -264,6 +302,12 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
         
         // Run Copy to clipboard if value is more than one
         if(Object.keys(value).length > 0) {
+            if(Object.keys(this.originalOptionsValue).length > 0) {
+                value = {
+                    ...this.originalOptionsValue,
+                    ...value
+                }
+            }
             this.copyTarget.dataset.clipboardText = JSON.stringify(JSON.stringify(value))
             this.copyTarget.click()
             this.#outputNotification(Object.keys(value).length + ` item${Object.keys(value).length > 0 ? 's' : ''} copied`);
@@ -277,8 +321,8 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
         Array.from(this.optionsTargets).forEach((dom) => {
             switch(true) {
                 case (/checkbox/g).test(dom.type):
-                    if(Boolean(dom.checked) !== this.ace.saveValue[dom.name]) {
-                        dom.checked = Boolean(this.ace.saveValue[dom.name])
+                    if(JSON.parse(dom.checked) !== this.ace.saveValue[dom.name]) {
+                        dom.checked = JSON.parse(this.ace.saveValue[dom.name])
                         this.editor.setOption(dom.name, dom.checked)
                     }
                     break;
@@ -296,11 +340,11 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
                         // Set Editor Option Value
                         switch (this.ace.saveValue[dom.name]){
                             case "true":
-                                this.editor.setOption(dom.name, Boolean(this.ace.saveValue[dom.name]))
+                                this.editor.setOption(dom.name, JSON.parse(this.ace.saveValue[dom.name]))
                                 break;
 
                             case "false":
-                                this.editor.setOption(dom.name, Boolean(this.ace.saveValue[dom.name]))
+                                this.editor.setOption(dom.name, JSON.parse(this.ace.saveValue[dom.name]))
                                 break;
 
                             default:

@@ -48,13 +48,10 @@ class CustomCodeEditorWidget(widgets.Widget):
         self.enable_modes: bool = enable_modes
         self.dropdown_config: DropdownConfig = dropdown_config or {}
 
-        options = json.loads(options) if isinstance(options, dict) else options
+        self.original_options = json.loads(options) if isinstance(options, str) else options
 
         # Merge by key 'name' matches the value of options
-        self.options: Dict[str, Any] = {d['name']: d for d in
-                                        getattr(wagtail_custom_code_editor_settings,
-                                                "OPTIONS_TYPES") + options} if bool(
-            options) is not False else getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES")
+        self.options: Dict[str, Any] = [{**d, "defaultValue": self.original_options[d['name']]} if d['name'] in self.original_options else d for d in getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES")] if bool(self.original_options) is not False else getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES")
 
         # Merge by key 'name' matches the value of modes
         self.modes: List[Dict[str, str]] = list(
@@ -148,6 +145,7 @@ class CustomCodeEditorWidget(widgets.Widget):
         attrs['data-custom-code-editor-modes-value'] = json.dumps(self.modes)
         attrs['data-custom-code-editor-options-value'] = json.dumps(self.options)
         attrs['data-custom-code-editor-dropdown-config-value'] = json.dumps(self.dropdown_config)
+        attrs['data-custom-code-editor-original-options-value'] = json.dumps(self.original_options)
         return attrs
 
     def format_value(self, value):

@@ -20,7 +20,7 @@ clean-pyc: ## Remove Python file artifacts.
 	find . -name '*~' -exec rm -f {} +
 
 publish: ## Publishes a new version to pypi.
-	rm dist/* && python3 setup.py sdist && twine upload dist/* && echo 'Success! Go to https://pypi.python.org/pypi/wagtailgmaps and check that all is well.'
+	rm dist/* && python3 setup.py sdist && twine upload dist/* && echo 'Success! Go to https://pypi.python.org/pypi/wagtail-custom-code-editor and check that all is well.'
 
 static:
 	python3 ./tests/testapp/manage.py collectstatic --noinput
