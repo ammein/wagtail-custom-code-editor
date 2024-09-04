@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 class CustomCodeEditor {
     originalValue;
 
@@ -6,7 +8,7 @@ class CustomCodeEditor {
         this.textarea = textarea
         this.ace = aceValue
 
-        var self = this;
+        let self = this;
         this.originalValue = {
             get code(){
                 let value = JSON.parse(self.textarea.value)
@@ -25,8 +27,8 @@ class CustomCodeEditor {
             },
 
             set mode(val){
-                if (/(?:\\|\/)\w+$/g.test(val)) {
-                    return val.match(/(?!(\/|\\))(?:\w)*$/g)[0]
+                if (/[\\/]\w+$/g.test(val)) {
+                    return val.match(/(?!([\/\\]))\w*$/g)[0]
                 }
                 return val;
             }
@@ -72,12 +74,12 @@ class CustomCodeEditor {
 
     commands() {
         // Save new value when press save command
-        var _this = this;
+        const _this = this;
         this.editor.commands.addCommand({
             name: 'saveNewCode',
             bindKey: {
-                win: (CustomCodeEditor.has(this.ace, 'config.saveCommand.win')) ? this.ace.config.saveCommand.win : 'Alt-Shift-S',
-                mac: (CustomCodeEditor.has(this.ace, 'config.saveCommand.mac')) ? this.ace.config.saveCommand.mac : 'Option-Shift-S'
+                win: (CustomCodeEditor.has(this.ace, 'config.saveCommand.win')) ? this.ace.config["saveCommand"].win : 'Alt-Shift-S',
+                mac: (CustomCodeEditor.has(this.ace, 'config.saveCommand.mac')) ? this.ace.config["saveCommand"].mac : 'Option-Shift-S'
             },
             exec: function (editor) {
                 _this.originalValue = {
@@ -91,7 +93,7 @@ class CustomCodeEditor {
     
     allEvents(){
         // Apply value on change in textarea
-        var _this = this;
+        const _this = this;
         this.editor.getSession().on('change', function () {
             let value = _this.getValue()
 
@@ -105,7 +107,7 @@ class CustomCodeEditor {
     }
 
     getValue(){
-        let mode = this.editor.session.getMode().$id.match(/(?!(\/|\\))(?:\w)*$/g)[0]
+        let mode = this.editor.session.getMode().$id.match(/(?!([\/\\]))\w*$/g)[0]
         if(this.editor.getValue().length > 0) {
             return {
                 mode: mode,
@@ -163,7 +165,7 @@ class CustomCodeEditor {
         return typeof item === 'string' && typeof item.length === 'number'
     }
 
-    static isArrayOfObject = function (item) {
+    static isArrayOfObject(item) {
         if (!item) {
             return false;
         }

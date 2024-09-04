@@ -1,5 +1,5 @@
 {% load wagtailadmin_tags custom_code_editor_helper %}
-<div class="editor-container" {% for k, v in widget.attrs.items %}{{k}}="{{v}}"{%endfor%}>
+<div class="editor-container" {% for k, v in widget.attrs.items %}{{k}}="{{v}}"{% endfor %}>
   {% if widget.enable_modes %}
   <div class="dropdown" data-custom-code-editor-target="dropdown">
     <button class="button-dropdown result" data-custom-code-editor-target="modeDropdown" data-action="click->custom-code-editor#toggleModes:prevent:stop">{% icon name="arrow-down" classname="icon-ace" title="Modes" %}</button>
@@ -31,8 +31,8 @@
         </div>
         <div class="button-container">
           <button class="copy-options" title="Copy All Changes Options" data-custom-code-editor-target="copy" data-action="custom-code-editor#copyToClipboard">{% icon name="copy" classname="icon-ace" title="Copy Options" %}</button>
-          <button class="undo-options" title="Undo" data-custom-code-editor-target="undo">{% icon name="history" classname="icon-ace" title="Undo Options" %}</button>
-          <span style="display:none;" data-custom-code-editor-target="notification"></span>
+          <button class="undo-options" title="Undo" data-custom-code-editor-target="undo" data-action="custom-code-editor#resetOptions">{% icon name="history" classname="icon-ace" title="Undo Options" %}</button>
+          <span class="changes-copy" style="display:none;" data-custom-code-editor-target="notification"></span>
         </div>
         <div class="line-category"></div>
         <ul>

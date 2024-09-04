@@ -194,11 +194,18 @@
 	border: 0;
 }
 
+.changes-copy{
+	display: inline-flex;
+	align-items: center;
+}
+
 .more-options-button:hover {
 	background-color: var(--w-color-surface-button-hover);
 }
 
 .button-options {
+	z-index: 99;
+	padding: 0 !important;
 	border: 0;
 	background-color: var(--w-color-surface-tooltip);
 	box-shadow: var(--w-color-box-shadow-md) 0px 7px 29px 0px;

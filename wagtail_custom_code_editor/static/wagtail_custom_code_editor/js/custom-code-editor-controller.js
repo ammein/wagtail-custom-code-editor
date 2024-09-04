@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
+
 class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
     static targets = ['editor', 'input', 'dropdown', 'modeDropdown', 'copy', 'undo', 'optionsButton', 'options', 'optionList', 'optionsContainer', 'modes', 'modeList', 'notification']
 
@@ -98,7 +100,7 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
         }
     }
 
-    toggleModes(event) {
+    toggleModes(_event) {
         if (this.modesTarget.style.display === 'none') {
             this.modesTarget.style.removeProperty('display')
         } else {
@@ -172,7 +174,7 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
     }
 
     #getSnippet(name) {
-        let valueMatch = this.modesValue.filter((val, i) => val.name === name)[0];
+        let valueMatch = this.modesValue.filter((val) => val.name === name)[0];
         return valueMatch && !CustomCodeEditor.has(valueMatch, 'disableSnippet') && CustomCodeEditor.has(valueMatch, 'snippet') ? valueMatch.snippet : ""
     }
 
@@ -183,7 +185,8 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
     }
 
     #checkOptions(selectors){
-        selectors.forEach((dom, i) => {
+        selectors.forEach((dom) => {
+            let value = null
             switch(true){
                 case (/select/g).test(dom.type):
                     if (this.editor.getOptions().hasOwnProperty(dom.name)){
@@ -206,13 +209,13 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
                     break;
 
                 case (/range/g).test(dom.type):
-                    var value = (this.editor.getOptions().hasOwnProperty(dom.name)) ? this.editor.getOptions()[dom.name] : 0
+                    value = (this.editor.getOptions().hasOwnProperty(dom.name)) ? this.editor.getOptions()[dom.name] : 0
                     dom.setAttribute('value', value);
                     this.ace.saveValue[dom.name] = Number(this.editor.getOptions()[dom.name]);
                     break;
 
                 case (/number/g).test(dom.type):
-                    var value = (this.editor.getOptions().hasOwnProperty(dom.name)) ? this.editor.getOptions()[dom.name] : 0;
+                    value = (this.editor.getOptions().hasOwnProperty(dom.name)) ? this.editor.getOptions()[dom.name] : 0;
                     dom.setAttribute('value', value);
                     this.ace.saveValue[dom.name] = parseFloat(this.editor.getOptions()[dom.name]);
                     break;
@@ -229,8 +232,8 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
 
     copyToClipboard(event) {
         event.preventDefault()
-        var value = {}
-        Array.from(this.optionsTargets).forEach((dom, i) => {
+        let value = {}
+        Array.from(this.optionsTargets).forEach((dom) => {
             switch(true) {
                 case (/checkbox/g).test(dom.type):
                     if(Boolean(dom.checked) !== this.ace.saveValue[dom.name]) {
@@ -245,7 +248,7 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
                     break;
 
                 case (/select/g).test(dom.type):
-                    var getValue = dom.options[dom.selectedIndex].value;
+                    let getValue = dom.options[dom.selectedIndex].value;
                     if(getValue !== this.ace.saveValue[dom.name]) {
                         value[dom.name] = getValue;
                     }
@@ -269,10 +272,60 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
         }
     }
 
+    resetOptions(event){
+        event.preventDefault()
+        Array.from(this.optionsTargets).forEach((dom) => {
+            switch(true) {
+                case (/checkbox/g).test(dom.type):
+                    if(Boolean(dom.checked) !== this.ace.saveValue[dom.name]) {
+                        dom.checked = Boolean(this.ace.saveValue[dom.name])
+                        this.editor.setOption(dom.name, dom.checked)
+                    }
+                    break;
+
+                case (/range/g).test(dom.type):
+                    if(parseFloat(dom.value) !== this.ace.saveValue[dom.name]) {
+                        dom.value = this.ace.saveValue[dom.name]
+                        this.editor.setOption(dom.name, dom.value)
+                    }
+                    break;
+
+                case (/select/g).test(dom.type):
+                    let getValue = dom.options[dom.selectedIndex].value;
+                    if(getValue !== this.ace.saveValue[dom.name]) {
+                        // Set Editor Option Value
+                        switch (this.ace.saveValue[dom.name]){
+                            case "true":
+                                this.editor.setOption(dom.name, Boolean(this.ace.saveValue[dom.name]))
+                                break;
+
+                            case "false":
+                                this.editor.setOption(dom.name, Boolean(this.ace.saveValue[dom.name]))
+                                break;
+
+                            default:
+                                this.editor.setOption(dom.name, this.ace.saveValue[dom.name])
+                        }
+                        // Set default on select html
+                        dom.selectedIndex = Array.from(dom.options).filter(val => val.value === this.ace.saveValue[dom.name]).reduce((val, next) => next, -1).index
+
+                    }
+                    break;
+
+                case (/number/g).test(dom.type):
+                    if(parseFloat(dom.value) !== this.ace.saveValue[dom.name]) {
+                        dom.value = this.ace.saveValue[dom.name]
+                        this.editor.setOption(dom.name, this.ace.saveValue[dom.name])
+                    }
+                    break;
+            }
+        })
+    }
+
     #outputNotification(text) {
         this.notificationTarget.style.removeProperty('display');
         this.notificationTarget.innerText = text;
-        var self = this;
+        let self = this;
         setTimeout(() => {
             self.notificationTarget.style.display = 'none';
         }, self.notificationTimeout)
@@ -320,8 +373,6 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
     #initEditor(){
         // Init the element
         this.inputTarget.style.display = 'none';
-
-        let name = this.inputTarget.name;
 
         this.editorClass = new CustomCodeEditor(this.inputTarget, this.editorTarget, { 
             ...this.ace,
