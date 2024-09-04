@@ -1,4 +1,3 @@
-import unittest
 from django.test import TestCase
 from wagtail_custom_code_editor.widgets import CustomCodeEditorWidget
 

@@ -8,7 +8,7 @@ start: ## Starts the development server.
 	python3 ./tests/testapp/manage.py runserver
 
 test: ## Test the project.
-	python3 ./runtests.py
+	cd ./tests/testapp && python3 manage.py test
 
 init: clean-pyc ## Install dependencies and initialise for development.
 	pip3 install -e .[testing]

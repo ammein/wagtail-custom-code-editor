@@ -1,6 +1,5 @@
 from __future__ import unicode_literals, annotations
 
-import glob
 import re
 import json
 from typing import Dict, List, Any
@@ -53,12 +52,15 @@ class CustomCodeEditorWidget(widgets.Widget):
 
         # Merge by key 'name' matches the value of options
         self.options: Dict[str, Any] = {d['name']: d for d in
-                                        getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES") + options} if bool(
+                                        getattr(wagtail_custom_code_editor_settings,
+                                                "OPTIONS_TYPES") + options} if bool(
             options) is not False else getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES")
 
         # Merge by key 'name' matches the value of modes
         self.modes: List[Dict[str, str]] = list(
-            {d['name']: d for d in getattr(wagtail_custom_code_editor_settings, "MODES") + modes}.values()) if modes is not None else getattr(wagtail_custom_code_editor_settings, "MODES")
+            {d['name']: d for d in
+             getattr(wagtail_custom_code_editor_settings, "MODES") + modes}.values()) if modes is not None else getattr(
+            wagtail_custom_code_editor_settings, "MODES")
 
         # See if mode not available in modes
         if len([d for d in self.modes if d['name'] == self.mode]) == 0:
@@ -106,6 +108,12 @@ class CustomCodeEditorWidget(widgets.Widget):
         # For Keybinding
         if self.keybinding:
             js.append("wagtail_custom_code_editor/ace/keybinding-%s.js" % self.keybinding)
+
+        # For Snippets
+        if len(save_modes) > 0:
+            for mode in save_modes:
+                if mode + ".js" in MODES:
+                    js.append("wagtail_custom_code_editor/ace/snippets/%s.js" % mode)
 
         # For EXT Files
         if self.extensions:
