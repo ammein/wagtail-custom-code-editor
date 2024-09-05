@@ -1,7 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
 class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
-    static targets = ['editor', 'input', 'dropdown', 'modeDropdown', 'copy', 'undo', 'optionsButton', 'options', 'optionList', 'optionsContainer', 'modes', 'modeList', 'notification']
+    static targets = ['container', 'editor', 'input', 'dropdown', 'modeDropdown', 'copy', 'undo', 'optionsButton', 'options', 'optionList', 'optionsContainer', 'modes', 'modeList', 'notification']
 
     static values = {
         theme: String,
@@ -14,17 +14,6 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
             type: Object
         }
     };
-
-    initialize(){
-        this.modesValue.forEach((val) => {
-            if (val.name === 'html'){
-                ace.require("ace/ext/emmet").setCore('ext/emmet_core');
-            }
-        })
-
-        this.originalValue = undefined;
-        this.notificationTimeout = 1500;
-    }
 
     connect() {
         this.ace = {
@@ -152,8 +141,11 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
     }
 
     editorMode(name) {
+        // Turn off onChange active for easy replace code from existing value
+        this.editorClass.active = false;
         this.editor.session.setMode('ace/mode/' + name)
         let snippet = this.#getSnippet(name);
+        let selected = null
 
         this.#setSnippet(snippet);
 
@@ -166,12 +158,20 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
             regExp: false
         });
 
+        // If changing mode got existing codes , replace the value
+        if (this.editor.getSelectedText().length > 0) {
+            selected = this.editor.replace(this.editor.getSelectedText());
+        }
+
         // If found
-        if (find && this.editorClass.originalValue.code) {
+        if (find && selected) {
             this.editor.replace(this.editorClass.originalValue.code);
         } else {
             this.editor.replace('');
         }
+
+        // Turn it back on
+        this.editorClass.active = true;
     }
 
     #getSnippet(name) {
@@ -372,7 +372,7 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
         let self = this;
         setTimeout(() => {
             self.notificationTarget.style.display = 'none';
-        }, self.notificationTimeout)
+        }, self.editorClass.notificationTimeout)
     }
 
     #dropdownConfig(){

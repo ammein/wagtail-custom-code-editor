@@ -80,6 +80,7 @@
 	cursor: pointer;
 	padding: 20px;
 	height: 100%;
+	justify-content: center;
 }
 
 .input-wrapper {

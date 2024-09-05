@@ -2,8 +2,11 @@
 
 class CustomCodeEditor {
     originalValue;
+    notificationTimeout = 1500;
+    active = true;
 
     constructor(textarea, editor, aceValue){
+        this.beforeInit(textarea, editor, aceValue);
         this.editor = ace.edit(editor);
         this.textarea = textarea
         this.ace = aceValue
@@ -49,6 +52,17 @@ class CustomCodeEditor {
 
         // Set Theme
         this.setTheme(this.ace.theme)
+
+        // Set After Init
+        this.afterInit();
+    }
+
+    beforeInit(textarea, editor, aceValue){
+
+    }
+
+    afterInit(){
+
     }
 
     setMode(mode){
@@ -97,7 +111,7 @@ class CustomCodeEditor {
         this.editor.getSession().on('change', function () {
             let value = _this.getValue()
 
-            if(value){
+            if(value && _this.active){
                 _this.textarea.value = _this.stringifyJSON({
                     mode: value.mode,
                     code: value.code
