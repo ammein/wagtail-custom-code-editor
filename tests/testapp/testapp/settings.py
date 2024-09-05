@@ -120,9 +120,10 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-STATICFILES_DIRS = [
-    os.path.join(PROJECT_DIR, 'static'),
-]
+# Uncomment below if got static files from an app
+# STATICFILES_DIRS = [
+#     os.path.join(PROJECT_DIR, 'static'),
+# ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
