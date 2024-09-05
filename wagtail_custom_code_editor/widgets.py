@@ -115,10 +115,10 @@ class CustomCodeEditorWidget(widgets.Widget):
         # For EXT Files
         if self.extensions:
             if isinstance(self.extensions, str):
-                js.append(self.extensions)
+                js.append("wagtail_custom_code_editor/ace/ext-%s.js" % self.extensions)
             else:
                 for extension in self.extensions:
-                    js.append(extension)
+                    js.append("wagtail_custom_code_editor/ace/ext-%s.js" % extension)
         else:
             # Upload all extensions by default
             for ext in EXTENSIONS:
