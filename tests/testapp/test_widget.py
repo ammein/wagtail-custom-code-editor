@@ -59,7 +59,7 @@ class WidgetTestCase(TestCase):
                 self.assertEqual(mode["snippet"], data["modes"][0]["snippet"])
                 self.assertEqual(mode["title"], data["modes"][0]["title"])
 
-    def test_change_options(self):
+    def test_change_options_as_string(self):
         from wagtail_custom_code_editor.settings import wagtail_custom_code_editor_settings
         dummy_options = json.dumps(dict(readOnly=True, cursorStyle="smooth", printMarginColumn=100, showFoldWidgets=True, printMargin=50))
         data = self._get_init_options()
@@ -74,3 +74,19 @@ class WidgetTestCase(TestCase):
         for option in widget.options:
             if option["name"] in json.loads(dummy_options):
                 self.assertEqual(option["defaultValue"], json.loads(dummy_options)[option["name"]])
+
+    def test_change_options_as_object(self):
+        from wagtail_custom_code_editor.settings import wagtail_custom_code_editor_settings
+        dummy_options = dict(readOnly=True, cursorStyle="smooth", printMarginColumn=100, showFoldWidgets=True, printMargin=50)
+        data = self._get_init_options()
+        data.update({
+            "options": dummy_options
+        })
+
+        widget = CustomCodeEditorWidget(**data)
+
+        self.assertNotEqual(widget.options, getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES"))
+
+        for option in widget.options:
+            if option["name"] in dummy_options:
+                self.assertEqual(option["defaultValue"], dummy_options[option["name"]])
