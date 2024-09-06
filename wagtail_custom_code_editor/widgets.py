@@ -92,11 +92,14 @@ class CustomCodeEditorWidget(widgets.Widget):
         save_modes = []
 
         # For Mode Files
-        for modes in self.modes:
-            for key, val in modes.items():
-                if key == "name":
-                    js.append("wagtail_custom_code_editor/ace/mode-%s.js" % val)
-                    save_modes.append(val)
+        if self.enable_modes:
+            for modes in self.modes:
+                for key, val in modes.items():
+                    if key == "name":
+                        js.append("wagtail_custom_code_editor/ace/mode-%s.js" % val)
+                        save_modes.append(val)
+        else:
+            js.append("wagtail_custom_code_editor/ace/mode-%s.js" % self.mode)
 
         # For Theme Files
         if self.theme:

@@ -213,6 +213,34 @@ class WidgetTestCase(TestCase):
         # Check if push modes is the same as defaultMode. Must always strict to 1 value
         self.assertEqual(total_checked_mode, 1, "Total checked modes not matched with default modes")
 
+    def test_check_options_enable_modes_is_false(self):
+        from django.contrib.staticfiles import finders
+        data = self._get_init_options()
+        data.update({
+            "enable_modes": False,
+        })
+
+        widget = CustomCodeEditorWidget(**data)
+
+        total_checked_mode = 0
+
+        for media in widget.media._js:
+            valid = re.search(r'(?=mode-).*(?=.js)', media)
+            if valid:
+                # Make sure static files is pushed
+                result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
+                self.assertTrue(result)
+
+                getMode = re.search(r'((?!-)\w)*$', valid.group())
+
+                self.assertTrue(getMode.group() == "html")
+                resultSnippets = finders.find('wagtail_custom_code_editor/ace/snippets/%s.js' % getMode.group())
+                self.assertTrue(resultSnippets)
+                total_checked_mode += 1
+
+        # Check if push modes is the same as defaultMode
+        self.assertEqual(total_checked_mode, 1, f"Total checked modes not strictly matched to one mode: {widget.mode}")
+
     def test_check_static_extension(self):
         from django.contrib.staticfiles import finders
         from wagtail_custom_code_editor.files import EXTENSIONS
