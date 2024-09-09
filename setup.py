@@ -9,8 +9,8 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 testing_extras = [
     # For test site
-    'django==4.2',
-    'wagtail==6.2',
+    'django>=4.2',
+    'wagtail>=6.2',
 ]
 
 setup(

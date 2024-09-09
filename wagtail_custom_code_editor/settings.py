@@ -377,11 +377,11 @@ class CustomCodeEditorSettings:
     """
     A settings object that allows the wagtailmedia settings to be accessed as
     properties. For example:
-        from wagtail_custom_code_editor.settings import customcodeeditor_settings
-        print(wagtailmedia_settings.MEDIA_MODEL)
+        from wagtail_custom_code_editor.settings import wagtail_custom_code_editor_settings
+        print(wagtail_custom_code_editor_settings.MODES)
     Note:
     This is an internal class that is only compatible with settings namespaced
-    under the WAGTAILCUSTOMCODEEDITOR name. It is not intended to be used by 3rd-party
+    under the WAGTAIL_CUSTOM_CODE_EDITOR name. It is not intended to be used by 3rd-party
     apps, and test helpers like `override_settings` may not work as expected.
     """
 
@@ -442,7 +442,6 @@ class CustomCodeEditorSettings:
 
 
 wagtail_custom_code_editor_settings = CustomCodeEditorSettings(None, DEFAULTS)
-
 
 
 def reload_wagtail_custom_code_editor_settings(**kwargs):

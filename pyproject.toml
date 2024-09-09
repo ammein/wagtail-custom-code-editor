@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wagtail-custom-code-editor"
-version = "0.0.1"
+version = "1.0.0"
 dependencies = [
     "django>=4.2",  # Replace "X.Y" as appropriate
 ]
@@ -42,6 +42,9 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
 ]
 license = {file = "LICENSE"}
+
+[project.optional-dependencies]
+dynamic = ['dependencies']
 
 [project.urls]
 Homepage = "https://github.com/ammein/wagtail-custom-code-editor"

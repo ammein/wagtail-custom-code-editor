@@ -425,9 +425,7 @@ class CustomCodeEditorStimulus extends window.StimulusModule.Controller {
 
         this.editor = this.editorClass.getEditor;
 
-        if (!this.editorClass.originalValue.mode && this.editorClass.originalValue.mode.length === 0) {
-            this.editorMode(this.ace.defaultMode);
-        }
+        this.editorMode(this.ace.defaultMode);
 
         // Check Options Modes
         if (this.hasOptionsTarget){

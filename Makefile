@@ -22,8 +22,8 @@ clean-pyc: ## Remove Python file artifacts.
 publish: ## Publishes a new version to pypi.
 	rm dist/* && python3 setup.py sdist && twine upload dist/* && echo 'Success! Go to https://pypi.python.org/pypi/wagtail-custom-code-editor and check that all is well.'
 
-static:
+static: ## Push Static Files to test
 	python3 ./tests/testapp/manage.py collectstatic --noinput
 
-getfiles:
+getfiles: ## Collect All Ace Files and insert them into `files.py`
 	python3 ./getfiles.py
