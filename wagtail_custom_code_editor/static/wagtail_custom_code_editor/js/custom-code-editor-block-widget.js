@@ -11,13 +11,17 @@
         // eslint-disable-next-line no-param-reassign
         placeholder.innerHTML = this.html.replace(/__NAME__/g, name).replace(/__ID__/g, id);
         // eslint-disable-next-line no-undef
-        const codeEditor = new CustomCodeEditor(placeholder.querySelector('textarea#' + id), placeholder.querySelector('#' + id + '-wrapper'), this.ace);
+        const codeEditor = new CustomCodeEditor(placeholder.querySelector('div.editor-' + id));
         // Hacky way to insert default original value
-        placeholder.querySelector('textarea#' + id).innerHTML = JSON.stringify({
-            "mode": codeEditor.originalValue.mode,
-            "code": codeEditor.originalValue.code
-        })
-        codeEditor.setState(JSON.parse(initialState));
+        if(codeEditor.originalValue.code){
+            placeholder.querySelector('textarea#' + id).innerHTML = JSON.stringify({
+                "mode": codeEditor.originalValue.mode,
+                "code": codeEditor.originalValue.code
+            })
+        } else {
+            codeEditor.setState(JSON.parse(initialState));
+        }
+
         return codeEditor;
     };
 

@@ -1,8 +1,9 @@
 from __future__ import annotations
 from django import forms
+from django.utils.translation.template import block_re
 from wagtail.blocks import FieldBlock
 from django.utils.translation import gettext_lazy as _
-from .types import DropdownConfig
+from .types import ButtonConfig
 from .validators import CustomCodeEditorDecoder
 from .widgets import CustomCodeEditorWidget
 
@@ -23,8 +24,9 @@ class CustomCodeEditorBlock(FieldBlock):
             useworker=True,
             extensions=None,
             enable_options=True,
-            enable_modes=True,
-            dropdown_config: DropdownConfig = None,
+            enable_modes=False,
+            dropdown_config: ButtonConfig = None,
+            read_only_config: ButtonConfig = None,
             options=None,
             modes=None,
             attrs=None,
@@ -42,6 +44,7 @@ class CustomCodeEditorBlock(FieldBlock):
             "enable_options": enable_options,
             "enable_modes": enable_modes,
             "dropdown_config": dropdown_config,
+            "read_only_config": read_only_config,
             "options": options,
             "modes": modes,
             "attrs": attrs

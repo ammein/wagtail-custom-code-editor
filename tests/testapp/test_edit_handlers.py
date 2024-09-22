@@ -13,10 +13,10 @@ class EditHandlersTestCase(SimpleTestCase):
         self.assertEqual(panel.ace_options['width'], '100%')
         self.assertEqual(panel.ace_options['height'], '300px')
         self.assertEqual(panel.ace_options['enable_options'], True)
-        self.assertEqual(panel.ace_options['enable_modes'], True)
+        self.assertEqual(panel.ace_options['enable_modes'], False)
 
     def test_init_with_values(self):
-        panel = CustomCodeEditorPanel('code', mode='glsl', theme='monokai')
+        panel = CustomCodeEditorPanel('code', mode='glsl', theme='monokai', enable_modes=True)
 
         self.assertEqual(panel.ace_options['theme'], 'monokai')
         self.assertEqual(panel.ace_options['mode'], 'glsl')

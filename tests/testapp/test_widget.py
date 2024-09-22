@@ -97,7 +97,9 @@ class WidgetTestCase(TestCase):
     def test_check_static_modes(self):
         from django.contrib.staticfiles import finders
         data = self._get_init_options()
-
+        data.update({
+            "enable_modes": True
+        })
         widget = CustomCodeEditorWidget(**data)
         modes = [d['name'] for d in widget.modes]
         print("Total default modes: %s" % len(modes))
@@ -127,6 +129,7 @@ class WidgetTestCase(TestCase):
         from django.contrib.staticfiles import finders
         data = self._get_init_options()
         data.update({
+            "enable_modes": True,
             "modes": [{
                 "title": "GLSL",
                 "name": "glsl",
@@ -182,7 +185,8 @@ class WidgetTestCase(TestCase):
 
         data = {
             "mode": "glsl",
-            "theme": "monokai"
+            "theme": "monokai",
+            "enable_modes": True
         }
 
         widget = CustomCodeEditorWidget(**data)
@@ -216,9 +220,6 @@ class WidgetTestCase(TestCase):
     def test_check_options_enable_modes_is_false(self):
         from django.contrib.staticfiles import finders
         data = self._get_init_options()
-        data.update({
-            "enable_modes": False,
-        })
 
         widget = CustomCodeEditorWidget(**data)
 
@@ -372,3 +373,25 @@ class WidgetTestCase(TestCase):
                 if getWorker.group() in modes:
                     # Make sure that worker is matches modes options
                     self.assertTrue(getWorker.group() in modes)
+
+    def test_if_widget_use_as_django_admin(self):
+        from django.contrib.staticfiles import finders
+        data = self._get_init_options()
+        data.update({
+            "django_admin": True
+        })
+        widget = CustomCodeEditorWidget(**data)
+
+        total_checked_js = 0
+
+        for media in widget.media._js:
+            valid = re.search(r'custom-code-editor-controller(?=.js)', media)
+            if valid:
+                # Make sure static files is pushed
+                result = finders.find('wagtail_custom_code_editor/js/%s.js' % valid.group())
+                self.assertFalse(result)
+                self.assertFalse(valid.group() == "custom-code-editor-controller")
+                total_checked_js += 1
+
+        # Check if push asset is strictly equal to 0 on custom-code-editor-controller javascript file
+        self.assertEqual(total_checked_js, 0)

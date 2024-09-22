@@ -9,7 +9,7 @@ class CSSPosition(TypedDict, total=False):
     bottom: str | int | float
 
 
-class DropdownConfig(TypedDict, total=False):
+class ButtonConfig(TypedDict, total=False):
     position: CSSPosition
     height: str
     width: str

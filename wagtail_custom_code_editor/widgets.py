@@ -8,7 +8,7 @@ from django.forms import Media, widgets
 from wagtail.widget_adapters import WidgetAdapter
 from wagtail.telepath import register
 from .settings import wagtail_custom_code_editor_settings
-from .types import DropdownConfig
+from .types import ButtonConfig
 from .files import (
     EXTENSIONS,
     MODES,
@@ -30,11 +30,13 @@ class CustomCodeEditorWidget(widgets.Widget):
             useworker=True,
             extensions=None,
             enable_options=True,
-            enable_modes=True,
+            enable_modes=False,
             dropdown_config=None,
+            read_only_config=None,
             options=None,
             modes=None,
-            attrs=None
+            attrs=None,
+            django_admin=False
     ):
         self.mode: str = mode
         self.theme: str = theme
@@ -46,7 +48,9 @@ class CustomCodeEditorWidget(widgets.Widget):
         self.extensions: str | List = extensions
         self.enable_options: bool = enable_options
         self.enable_modes: bool = enable_modes
-        self.dropdown_config: DropdownConfig = dropdown_config or {}
+        self.dropdown_config: ButtonConfig = dropdown_config or {}
+        self.read_only_config: ButtonConfig = read_only_config or {}
+        self.django_admin: bool = django_admin
 
         self.original_options = json.loads(options) if isinstance(options, str) else options
 
@@ -78,16 +82,19 @@ class CustomCodeEditorWidget(widgets.Widget):
         context['widget']['enable_options'] = bool(self.enable_options)
         context['widget']['options'] = self.options
         context['widget']['modes'] = self.modes
+        context['widget']['django_admin'] = bool(self.django_admin)
         return context
 
     @cached_property
     def media(self):
         js = [
             "wagtail_custom_code_editor/ace/ace.js",
-            "wagtail_custom_code_editor/js/custom-code-editor-controller.js",
             "wagtail_custom_code_editor/js/custom-code-editor.js",
             "wagtail_custom_code_editor/clipboard/clipboard.min.js",
         ]
+
+        if not self.django_admin:
+            js.append("wagtail_custom_code_editor/js/custom-code-editor-controller.js")
 
         save_modes = []
 
@@ -143,12 +150,13 @@ class CustomCodeEditorWidget(widgets.Widget):
     def build_attrs(self, *args, **kwargs):
         attrs = super().build_attrs(*args, **kwargs)
         attrs['data-controller'] = "custom-code-editor"
-        attrs['data-custom-code-editor-mode-value'] = self.mode
-        attrs['data-custom-code-editor-theme-value'] = self.theme
-        attrs['data-custom-code-editor-modes-value'] = json.dumps(self.modes)
-        attrs['data-custom-code-editor-options-value'] = json.dumps(self.options)
-        attrs['data-custom-code-editor-dropdown-config-value'] = json.dumps(self.dropdown_config)
-        attrs['data-custom-code-editor-original-options-value'] = json.dumps(self.original_options)
+        attrs['data-mode-value'] = self.mode
+        attrs['data-theme-value'] = self.theme
+        attrs['data-modes-value'] = json.dumps(self.modes)
+        attrs['data-options-value'] = json.dumps(self.options)
+        attrs['data-dropdown-config-value'] = json.dumps(self.dropdown_config)
+        attrs['data-read-only-config-value'] = json.dumps(self.read_only_config)
+        attrs['data-original-options-value'] = json.dumps(self.original_options)
         return attrs
 
     def format_value(self, value):
@@ -171,7 +179,8 @@ class CustomCodeEditorAdapter(WidgetAdapter):
             'defaultMode': widget.mode,
             'modes': widget.modes,
             'options': widget.options,
-            'dropdownConfig': widget.dropdown_config
+            'dropdownConfig': widget.dropdown_config,
+            'readOnlyConfig': widget.read_only_config
         }
         return [
             *args,
