@@ -229,8 +229,8 @@ class CustomCodeEditor extends ClassEventsES6{
 
         // Set default value if modes available and originalValue is not available
         if (this.ace.modes.length > 0 && !this.getValue() || (!this.getValue().code || this.getValue().code.length === 0)) {
-            this.editorMode(this.ace.defaultMode)
             this.trigger('switchMode', true);
+            this.editorMode(this.ace.defaultMode)
             this.editor.clearSelection();
         }
 
@@ -465,6 +465,8 @@ class CustomCodeEditor extends ClassEventsES6{
         event.stopPropagation();
         this.trigger('switchMode', false);
         let val = this.getValue();
+        this.originalValue.code = val.code;
+        this.originalValue.mode(val.mode)
         this.setValue(val.mode, val.code);
     }
 
@@ -934,7 +936,7 @@ class CustomCodeEditor extends ClassEventsES6{
      */
     commands() {
         // Save new value when press save command
-        const _this = this;
+        const that = this;
         this.editor.commands.addCommand({
             name: 'saveNewCode',
             bindKey: {
@@ -942,10 +944,8 @@ class CustomCodeEditor extends ClassEventsES6{
                 mac: (CustomCodeEditor.has(this.ace, 'config.saveCommand.mac')) ? this.ace.config["saveCommand"].mac : 'Option-Shift-S'
             },
             exec: function (editor) {
-                _this.originalValue = {
-                    mode: _this.originalValue.mode,
-                    code: editor.getSelectedText()
-                };
+                that.originalValue.code(editor.getSelectedText());
+                that.originalValue.mode(that.getMode());
             },
             readOnly: false
         });

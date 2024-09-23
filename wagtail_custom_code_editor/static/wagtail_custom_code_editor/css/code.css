@@ -38,13 +38,12 @@
 .editor-container .my-input {
 	border: 1px solid var(--w-color-border-field-default, #91d2d2) !important;
 	margin: 20px;
-	border: 20px;
 	padding: 15px;
 	background-color: var(--w-color-surface-page, white);
 	font-size: 14px;
 	width: 170px;
 	border-radius: 5px;
-	font-family: var(--w-font-mono, monospace);
+	font-family: var(--w-font-mono, "monospace"), monospace;
 }
 
 .editor-container .dropdown-content {
@@ -105,12 +104,10 @@
 }
 
 .editor-container .button-dropdown {
-	height: inherit;
 	background-color: transparent;
 	border: none;
 	width: 100%;
 	color: black;
-	padding: inherit;
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -191,7 +188,7 @@
 	padding: 15px !important;
 	color: var(--w-color-text-context, darkgray);
 	border: 0;
-	font-family: var(--w-font-mono, monospace);
+	font-family: var(--w-font-mono, monospace), monospace;
 	font-size: 14px;
 	font-weight: 400;
 	line-height: normal;
@@ -247,12 +244,12 @@
 	padding: 0 !important;
 	border: 0;
 	background-color: var(--w-color-surface-tooltip, darkblue);
-	box-shadow: var(--w-color-box-shadow-md, darkgray) 0px 7px 29px 0px;
+	box-shadow: var(--w-color-box-shadow-md, darkgray) 0 7px 29px 0;
 	width: 35px;
 	height: 50px;
 	border-radius: 0 0 0 15px;
 	cursor: pointer;
-	backdrop-filter: blur(0.8px);
+	backdrop-filter: blur(1px);
 }
 
 .button-options:hover {
@@ -359,7 +356,7 @@
 	color: rgba(94, 94, 94, 1);
 	align-self: stretch;
 	margin-bottom: 10px;
-	font-family: "Arial";
+	font-family: "Arial", sans-serif;
 	font-size: 14px;
 	font-weight: 400;
 	line-height: normal;
@@ -380,9 +377,9 @@
 
 .line-category {
 	border-top: 1px solid var(--w-color-border-field-default, #91d2d2);
-	margin-top: 16.5px;
+	margin-top: 17px;
 	margin-right: 25px;
-	margin-bottom: 13.5px;
+	margin-bottom: 14px;
 }
 
 .lists-inputs {

@@ -1,5 +1,5 @@
 # wagtail-custom-code-editor
-
+![Workflow](https://github.com/ammein/wagtail-custom-code-editor/actions/workflows/github-actions-check.yml/badge.svg)
 
 A Wagtail Custom Field for your own in editor field.
 
@@ -39,5 +39,3 @@ class MyPage(Page):
         CustomCodeEditorPanel('code')
     ]
 ```
-
-Then you'll see like this:
