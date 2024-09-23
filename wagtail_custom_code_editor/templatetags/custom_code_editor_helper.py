@@ -52,7 +52,7 @@ def generate_options_lists(options: List[Dict]):
                 <li data-category='{category}' id='{category}' style='cursor:pointer;' data-header='{category}'>
                     <h1 class='category' class='uncollapse' style='text-transform:capitalize;'> {category_label.capitalize()} Options</h1>
                 </li>    
-                <ul data-header='{category}'>
+                <ul data-header='{category}' style='margin-left:1.5em;'>
                 """
         for option in category_options[category]:
             options_html: str = ""
@@ -70,7 +70,7 @@ def generate_options_lists(options: List[Dict]):
                             options_html += f"<option value='{json.dumps(value) if isinstance(value, str) is False else value}'>{title}</option>"
 
                     if option.get('help') is not None:
-                        help_html = f"<span style='font-size: 12px;font-style: italic; display:block;'>{option.get('help')}</span>"
+                        help_html = f"<span class='help-text' style='font-size: 12px;font-style: italic; display:block;'>{option.get('help')}</span>"
 
                     html += f"""
                             <li id='{option.get('name')}' class='lists-inputs' data-category='{option.get('category').replace('-', ' ')}'>
@@ -84,13 +84,13 @@ def generate_options_lists(options: List[Dict]):
             # Slider
             elif option.get('type') == 'number':
                 if option.get('help') is not None:
-                    help_html = f"<span style='font-size: 12px;font-style: italic; display:block;'>{option.get('help')}</span>"
+                    help_html = f"<span class='help-text' style='font-size: 12px;font-style: italic; display:block;'>{option.get('help')}</span>"
 
                 if option.get('value') is not None:
                     html += f"""
                             <li id='{option.get('name')}' class='lists-inputs' data-category='{option.get('category').replace('-', ' ')}'>
                                 <label for='{option.get('name')}'>{label.capitalize()} :</label>
-                                <input class='input-options' name='{option.get('name')}' {"data-default-value='" + json.dumps(option.get('defaultValue')) + "'" if option.get('defaultValue') is not None else ''} max='{option.get('value').get('max')}' min='{option.get('value').get('min')}' {"step='" + option.get('value').get('step') + "'" if option.get('value').get('step') else ""} type='range' class='range-slider__range'>
+                                <input class='input-options range-slider__range' name='{option.get('name')}' {"data-default-value='" + json.dumps(option.get('defaultValue')) + "'" if option.get('defaultValue') is not None else ''} max='{option.get('value').get('max')}' min='{option.get('value').get('min')}' {"step='" + option.get('value').get('step') + "'" if option.get('value').get('step') else ""} type='range'>
                                 <output class='range-slider__value' style='display:none;'></output>
                                 {help_html}
                             </li>
@@ -107,7 +107,7 @@ def generate_options_lists(options: List[Dict]):
             elif option.get('type') == 'boolean':
                 # Checkbox
                 if option.get('help') is not None:
-                    help_html = f"<span style='font-size: 12px;font-style: italic; display:block;'>{option.get('help')}</span>"
+                    help_html = f"<span class='help-text' style='font-size: 12px;font-style: italic; display:block;'>{option.get('help')}</span>"
 
                 html += f"""
                         <li id='{option.get('name')}' class='lists-inputs' data-category='{option.get('category').replace('-', ' ')}'>

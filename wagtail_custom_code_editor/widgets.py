@@ -36,7 +36,8 @@ class CustomCodeEditorWidget(widgets.Widget):
             options=None,
             modes=None,
             attrs=None,
-            django_admin=False
+            django_admin=False,
+            block=False
     ):
         self.mode: str = mode
         self.theme: str = theme
@@ -51,6 +52,7 @@ class CustomCodeEditorWidget(widgets.Widget):
         self.dropdown_config: ButtonConfig = dropdown_config or {}
         self.read_only_config: ButtonConfig = read_only_config or {}
         self.django_admin: bool = django_admin
+        self.block: bool = block
 
         self.original_options = json.loads(options) if isinstance(options, str) else options
 
@@ -149,7 +151,8 @@ class CustomCodeEditorWidget(widgets.Widget):
 
     def build_attrs(self, *args, **kwargs):
         attrs = super().build_attrs(*args, **kwargs)
-        attrs['data-controller'] = "custom-code-editor"
+        if not self.block:
+            attrs['data-controller'] = "custom-code-editor"
         attrs['data-mode-value'] = self.mode
         attrs['data-theme-value'] = self.theme
         attrs['data-modes-value'] = json.dumps(self.modes)

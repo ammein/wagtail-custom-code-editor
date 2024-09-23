@@ -47,7 +47,8 @@ class CustomCodeEditorBlock(FieldBlock):
             "read_only_config": read_only_config,
             "options": options,
             "modes": modes,
-            "attrs": attrs
+            "attrs": attrs,
+            "block": True
         }
         self.field = forms.JSONField(widget=CustomCodeEditorWidget(**self._ace_options), help_text=help_text, required=required, decoder=CustomCodeEditorDecoder, disabled=disabled, label=label)
         super().__init__(**kwargs)

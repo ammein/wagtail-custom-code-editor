@@ -184,12 +184,6 @@ class CustomCodeEditor extends ClassEventsES6{
         // Initialize all events
         this.allEvents();
 
-        if(this.getValue()){
-            this.setValue(this.getValue().mode, this.getValue().code)
-        } else {
-            this.setValue(this.originalValue.mode, this.originalValue.code)
-        }
-
         // Set Editor Commands
         this.commands();
 
@@ -198,6 +192,59 @@ class CustomCodeEditor extends ClassEventsES6{
 
         // Set After Init
         this.afterInit();
+    }
+
+    /**
+     * To let user extend beforeInit method
+     */
+    beforeInit(){
+
+    }
+
+    /**
+     * To let user extend afterInit method
+     */
+    afterInit(){
+
+    }
+
+    /**
+     * Initialize Custom Code Editor
+     */
+    init(){
+        this.textarea.style.display = 'none';
+
+        this.editor = ace.edit(this.container.querySelector('.editor'));
+
+        if(this.container.querySelector('button.button-dropdown.result')){
+            this.container.querySelector('.text-mode').innerText = this.getValue() ? this.getModeTitle(this.getValue().mode) : this.getModeTitle(this.originalValue.mode);
+        }
+
+        // Set original value
+        if(this.originalValue.code){
+            this.trigger('switchMode', false);
+            this.setValue(this.originalValue.mode, this.originalValue.code)
+            this.editor.clearSelection();
+        }
+
+        // Set default value if modes available and originalValue is not available
+        if (this.ace.modes.length > 0 && !this.getValue() || (!this.getValue().code || this.getValue().code.length === 0)) {
+            this.editorMode(this.ace.defaultMode)
+            this.trigger('switchMode', true);
+            this.editor.clearSelection();
+        }
+
+        this.trigger('onChange', true);
+
+        if(this.container.querySelectorAll('input.input-options').length > 0){
+            this.checkOptions();
+        }
+
+        if(this.container.querySelector('.dropdown')) {
+            this.dropdownConfig();
+            this.readOnlyConfig();
+        }
+
     }
 
     /**
@@ -285,11 +332,15 @@ class CustomCodeEditor extends ClassEventsES6{
         if (switchState) {
             this.trigger('onChange', false)
             this.editor.setReadOnly(true)
-            this.switchButtonContainer.style.display = "flex";
+            if(this.switchButtonContainer){
+                this.switchButtonContainer.style.display = "flex";
+            }
         } else {
             this.trigger('onChange', true)
             this.editor.setReadOnly(false)
-            this.switchButtonContainer.style.display = "none";
+            if(this.switchButtonContainer) {
+                this.switchButtonContainer.style.display = "none";
+            }
         }
     }
 
@@ -496,7 +547,6 @@ class CustomCodeEditor extends ClassEventsES6{
      * Set mode on click
      */
     setModeClick(){
-        this.trigger('switchMode', true);
         let that = this;
         Array.from(this.container.querySelectorAll('li.modes-lists')).forEach((list) => {
             list.addEventListener('click', that.listOnClick.bind(that))
@@ -509,7 +559,8 @@ class CustomCodeEditor extends ClassEventsES6{
      */
     listOnClick(event){
         event.stopPropagation();
-        let name = event.currentTarget.getAttribute('name');
+        this.trigger('switchMode', true)
+        let name = event.currentTarget.dataset.name;
         this.editorMode(name);
     }
 
@@ -813,51 +864,6 @@ class CustomCodeEditor extends ClassEventsES6{
 
         if (CustomCodeEditor.has(this.readOnlyConfigValue, 'backgroundColor')) {
             this.container.querySelector('.switch').style.backgroundColor = this.readOnlyConfigValue.backgroundColor
-        }
-
-    }
-
-    /**
-     * To let user extend beforeInit method
-     */
-    beforeInit(){
-
-    }
-
-    /**
-     * To let user extend afterInit method
-     */
-    afterInit(){
-
-    }
-
-    /**
-     * Initialize Custom Code Editor
-     */
-    init(){
-        this.textarea.style.display = 'none';
-
-        this.editor = ace.edit(this.container.querySelector('.editor'));
-
-        if(this.container.querySelector('button.button-dropdown.result')){
-            this.container.querySelector('.text-mode').innerText = this.getValue() ? this.getModeTitle(this.getValue().mode) : this.getModeTitle(this.originalValue.mode);
-        }
-
-        this.trigger('onChange', false);
-
-        if (this.ace.modes.length > 0 && !this.getValue() || (!this.getValue().code || this.getValue().code.length === 0)) {
-            this.editorMode(this.ace.defaultMode)
-        }
-
-        this.trigger('onChange', true);
-
-        if(this.container.querySelectorAll('input.input-options').length > 0){
-            this.checkOptions();
-        }
-
-        if(this.container.querySelector('.dropdown')) {
-            this.dropdownConfig();
-            this.readOnlyConfig();
         }
 
     }
