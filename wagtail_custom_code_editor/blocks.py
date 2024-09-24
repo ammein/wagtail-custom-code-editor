@@ -1,6 +1,5 @@
 from __future__ import annotations
 from django import forms
-from django.utils.translation.template import block_re
 from wagtail.blocks import FieldBlock
 from django.utils.translation import gettext_lazy as _
 from .types import ButtonConfig

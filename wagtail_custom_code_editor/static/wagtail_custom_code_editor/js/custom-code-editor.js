@@ -100,11 +100,13 @@ class ClassEventsES6 {
  * @property {HTMLElement} switchButtonContainer
  * @property {HTMLButtonElement} switchButton
  * @property {{ code: string, mode: string }} originalValue
+ * @property {boolean} active
  * @property {number} notificationTimeout
  */
 class CustomCodeEditor extends ClassEventsES6{
     originalValue;
     notificationTimeout = 1500;
+    active = false;
 
     constructor(container){
         super();
@@ -234,7 +236,7 @@ class CustomCodeEditor extends ClassEventsES6{
             this.editor.clearSelection();
         }
 
-        this.trigger('onChange', true);
+        this.active = true;
 
         if(this.container.querySelectorAll('input.input-options').length > 0){
             this.checkOptions();
@@ -252,8 +254,8 @@ class CustomCodeEditor extends ClassEventsES6{
      */
     allEvents(){
         let that = this;
-        // Anything on change, trigger
-        this.on('onChange', this.onChangeEvent.bind(this));
+        // Editor Session
+        this.editor.session.on('change', this.onChange.bind(this));
         // Checkbox on change
         Array.from(this.container.querySelectorAll('input[type="checkbox"]')).forEach(input => input.addEventListener("change", that.checkboxOnChange.bind(that)))
         // Dropdown on change
@@ -290,8 +292,8 @@ class CustomCodeEditor extends ClassEventsES6{
 
     disconnectAllEvents(){
         let that = this;
-        // Off trigger
-        this.off('onChange', this.onChangeEvent.bind(this));
+        // Editor Session
+        this.editor.session.off('change', this.onChange.bind(this));
         // Checkbox on change
         Array.from(this.container.querySelectorAll('input[type="checkbox"]')).forEach(input => input.removeEventListener("change", that.checkboxOnChange.bind(that)))
         // Dropdown on change
@@ -330,13 +332,13 @@ class CustomCodeEditor extends ClassEventsES6{
 
     switchModeState(switchState = false) {
         if (switchState) {
-            this.trigger('onChange', false)
+            this.active = false;
             this.editor.setReadOnly(true)
             if(this.switchButtonContainer){
                 this.switchButtonContainer.style.display = "flex";
             }
         } else {
-            this.trigger('onChange', true)
+            this.active = true;
             this.editor.setReadOnly(false)
             if(this.switchButtonContainer) {
                 this.switchButtonContainer.style.display = "none";
@@ -465,8 +467,6 @@ class CustomCodeEditor extends ClassEventsES6{
         event.stopPropagation();
         this.trigger('switchMode', false);
         let val = this.getValue();
-        this.originalValue.code = val.code;
-        this.originalValue.mode(val.mode)
         this.setValue(val.mode, val.code);
     }
 
@@ -563,6 +563,7 @@ class CustomCodeEditor extends ClassEventsES6{
         event.stopPropagation();
         this.trigger('switchMode', true)
         let name = event.currentTarget.dataset.name;
+        this.container.querySelector('.text-mode').innerText = this.getModeTitle(name);
         this.editorMode(name);
     }
 
@@ -584,7 +585,7 @@ class CustomCodeEditor extends ClassEventsES6{
          * Collect all inputs
          * @type {HTMLInputElement[]}
          */
-        let inputs = Array.from(this.container.querySelectorAll('input.input-options'))
+        let inputs = Array.from(this.container.querySelectorAll('input.input-options,select.input-options'))
         let that = this;
         inputs.forEach((input) => {
             let value = null;
@@ -676,7 +677,7 @@ class CustomCodeEditor extends ClassEventsES6{
         event.preventDefault();
         let value = {}
         let that = this;
-        Array.from(this.container.querySelector('input.input-options')).forEach((dom) => {
+        Array.from(this.container.querySelectorAll('input.input-options,select.input-options')).forEach((dom) => {
             switch (true) {
                 case (/checkbox/g).test(dom.type):
                     if (JSON.parse(dom.checked) !== that.ace.saveValue[dom.name]) {
@@ -741,7 +742,7 @@ class CustomCodeEditor extends ClassEventsES6{
     resetOptions(event){
         event.preventDefault();
         let that = this;
-        Array.from(this.container.querySelectorAll('input.input-options')).forEach((dom) => {
+        Array.from(this.container.querySelectorAll('input.input-options,select.input-options')).forEach((dom) => {
             switch (true) {
                 case (/checkbox/g).test(dom.type):
                     if (JSON.parse(dom.checked) !== that.ace.saveValue[dom.name]) {
@@ -787,6 +788,7 @@ class CustomCodeEditor extends ClassEventsES6{
                     break;
             }
         })
+        this.#outputNotification('Changes reset');
     }
 
     /**
@@ -952,26 +954,14 @@ class CustomCodeEditor extends ClassEventsES6{
     }
 
     /**
-     * For trigger change event or not
-     * @param {boolean} trigger
-     */
-    onChangeEvent(trigger = true){
-        if(trigger){
-            this.editor.session.on('change', this.onChange.bind(this, trigger));
-        } else if(!trigger) {
-            this.editor.session.off('change', this.onChange.bind(this, trigger));
-        }
-    }
-
-    /**
      * Editor on change events
      * @param {Event} _event
      * @param {boolean} active
      */
-    onChange(_event, active){
+    onChange(_event){
         let value = this.getValue()
 
-        if(value && active){
+        if(value && this.active){
             this.textarea.value = this.stringifyJSON({
                 mode: value.mode,
                 code: value.code
@@ -1126,6 +1116,9 @@ class CustomCodeEditor extends ClassEventsES6{
 
     // Widget Adapter Functions
     setState(value) {
+        if(typeof value === "string") {
+            value = JSON.parse(value);
+        }
         this.setValue(value.mode, value.code)
     }
 
@@ -1133,14 +1126,15 @@ class CustomCodeEditor extends ClassEventsES6{
         return this.getValue();
     }
 
-    focus() {
-        this.editor.focus();
+    focus(soft) {
+        if(soft){
+            this.editor.focus();
+        }
     }
 
     disconnect() {
         this.editor.destroy();
         this.disconnectAllEvents();
         this.off('switchMode', this.switchModeState.bind(this))
-        this.editor.session.off('change', this.onChange.bind(this));
     }
 }

@@ -233,6 +233,7 @@
 .changes-copy{
 	display: inline-flex;
 	align-items: center;
+	color: var(--w-color-text-label, white);
 }
 
 .more-options-button:hover {

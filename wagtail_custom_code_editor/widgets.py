@@ -177,17 +177,8 @@ class CustomCodeEditorAdapter(WidgetAdapter):
 
     def js_args(self, widget):
         args = super().js_args(widget)
-        ace = {
-            'theme': widget.theme,
-            'defaultMode': widget.mode,
-            'modes': widget.modes,
-            'options': widget.options,
-            'dropdownConfig': widget.dropdown_config,
-            'readOnlyConfig': widget.read_only_config
-        }
         return [
-            *args,
-            ace,
+            *args
         ]
 
     class Media:

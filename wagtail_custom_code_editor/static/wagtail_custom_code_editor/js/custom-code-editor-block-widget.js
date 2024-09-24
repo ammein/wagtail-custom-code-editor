@@ -30,11 +30,5 @@
         return this.codeEditor;
     };
 
-    CustomCodeEditorWidget.prototype.focus = function(soft){
-        if(soft){
-            this.codeEditor.focus();
-        }
-    }
-
     window.telepath.register('wagtail_custom_code_editor.widgets.CustomCodeEditor', CustomCodeEditorWidget);
 })()
