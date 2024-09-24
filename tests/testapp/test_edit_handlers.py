@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 
-from wagtail_custom_code_editor.edit_handlers import CustomCodeEditorPanel
+from wagtail_custom_code_editor.panels import CustomCodeEditorPanel
 from wagtail_custom_code_editor.widgets import CustomCodeEditorWidget
 
 

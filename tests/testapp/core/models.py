@@ -1,7 +1,7 @@
 from wagtail.admin.panels import MultiFieldPanel
 from wagtail.models import Page
 
-from wagtail_custom_code_editor.edit_handlers import CustomCodeEditorPanel
+from wagtail_custom_code_editor.panels import CustomCodeEditorPanel
 from wagtail_custom_code_editor.fields import CustomCodeEditorField
 
 
