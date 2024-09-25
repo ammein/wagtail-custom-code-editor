@@ -8,7 +8,6 @@ from django.forms import Media, widgets
 from wagtail.widget_adapters import WidgetAdapter
 from wagtail.telepath import register
 from .settings import wagtail_custom_code_editor_settings
-from .types import ButtonConfig
 from .files import (
     EXTENSIONS,
     MODES,
@@ -33,6 +32,7 @@ class CustomCodeEditorWidget(widgets.Widget):
             enable_modes=False,
             dropdown_config=None,
             read_only_config=None,
+            save_command_config=None,
             options=None,
             modes=None,
             attrs=None,
@@ -49,8 +49,9 @@ class CustomCodeEditorWidget(widgets.Widget):
         self.extensions: str | List = extensions
         self.enable_options: bool = enable_options
         self.enable_modes: bool = enable_modes
-        self.dropdown_config: ButtonConfig = dropdown_config or {}
-        self.read_only_config: ButtonConfig = read_only_config or {}
+        self.dropdown_config = dropdown_config or {}
+        self.read_only_config = read_only_config or {}
+        self.save_command_config = save_command_config or {}
         self.django_admin: bool = django_admin
         self.block: bool = block
 
@@ -159,6 +160,7 @@ class CustomCodeEditorWidget(widgets.Widget):
         attrs['data-options-value'] = json.dumps(self.options)
         attrs['data-dropdown-config-value'] = json.dumps(self.dropdown_config)
         attrs['data-read-only-config-value'] = json.dumps(self.read_only_config)
+        attrs['data-save-command-config-value'] = json.dumps(self.save_command_config)
         attrs['data-original-options-value'] = json.dumps(self.original_options)
         return attrs
 

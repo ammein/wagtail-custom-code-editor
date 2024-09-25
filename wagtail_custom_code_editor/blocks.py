@@ -2,7 +2,6 @@ from __future__ import annotations
 from django import forms
 from wagtail.blocks import FieldBlock
 from django.utils.translation import gettext_lazy as _
-from .types import ButtonConfig
 from .validators import CustomCodeEditorDecoder
 from .widgets import CustomCodeEditorWidget
 
@@ -24,8 +23,9 @@ class CustomCodeEditorBlock(FieldBlock):
             extensions=None,
             enable_options=True,
             enable_modes=False,
-            dropdown_config: ButtonConfig = None,
-            read_only_config: ButtonConfig = None,
+            dropdown_config=None,
+            read_only_config=None,
+            save_command_config=None,
             options=None,
             modes=None,
             attrs=None,
@@ -44,12 +44,14 @@ class CustomCodeEditorBlock(FieldBlock):
             "enable_modes": enable_modes,
             "dropdown_config": dropdown_config,
             "read_only_config": read_only_config,
+            "save_command_config": save_command_config,
             "options": options,
             "modes": modes,
             "attrs": attrs,
             "block": True
         }
-        self.field = forms.JSONField(widget=CustomCodeEditorWidget(**self._ace_options), help_text=help_text, required=required, decoder=CustomCodeEditorDecoder, disabled=disabled, label=label)
+        self.field = forms.JSONField(widget=CustomCodeEditorWidget(**self._ace_options), help_text=help_text,
+                                     required=required, decoder=CustomCodeEditorDecoder, disabled=disabled, label=label)
         super().__init__(**kwargs)
 
     class Meta:

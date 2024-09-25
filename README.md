@@ -1,5 +1,5 @@
 # wagtail-custom-code-editor
-![Workflow](https://github.com/ammein/wagtail-custom-code-editor/actions/workflows/github-actions-check.yml/badge.svg)
+![Wagtail Custom Code Editor Workflow](https://github.com/ammein/wagtail-custom-code-editor/actions/workflows/github-actions-check.yml/badge.svg)
 
 A **Wagtail Custom Code Editor Field** for your own editor field.
 
@@ -8,6 +8,16 @@ This package adds a full-featured code editor that is perfect for coding tutoria
 This field uses the open-source Ace Editor library that you may found here [Ace Editor](https://ace.c9.io/)
 
 ![intro](https://raw.githubusercontent.com/ammein/wagtail-custom-code-editor/refs/heads/main/docs/intro.gif)
+
+## Features
+- Replace traditional textarea to Ace Editor that you can easily check the linting of the codes.
+- Add snippet for better re-usable small region of source code, or any text format.
+- Configure your own Ace Editor Options to your own editor preferences.
+- Easily change mode available on your own default/custom mode's setup.
+- You can save any code highlights so that it can retain the same highlight's code when you change to different mode.
+
+## Documentation
+- [Settings](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/settings.md)
 
 ## Install
 
@@ -45,6 +55,20 @@ class MyPage(Page):
     content_panels = Page.content_panels + [
         CustomCodeEditorPanel('code')
     ]
+```
+
+#### Frontend
+You can easily grab the JSON value like this:
+```html
+<pre><code>{{ page.code.code }}</code></pre>
+```
+
+The JSON returns this two key value:
+```json
+{
+  "code": "Any Code here",
+  "mode": "html" 
+}
 ```
 
 ## License

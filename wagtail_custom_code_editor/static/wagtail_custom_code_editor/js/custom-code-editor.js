@@ -112,7 +112,6 @@ class CustomCodeEditor extends ClassEventsES6{
         super();
         this.on('switchMode', this.switchModeState.bind(this));
         this.container = container;
-        this.beforeInit(this.container.querySelector('textarea'), this.container.querySelector('.editor'), this.ace);
         this.textarea = this.container.querySelector('textarea')
         this.switchButtonContainer = this.container.querySelector('.switch-container');
         this.switchButton = this.container.querySelector('.switch');
@@ -123,6 +122,7 @@ class CustomCodeEditor extends ClassEventsES6{
         this.optionsValue = JSON.parse(this.container.dataset.optionsValue) || [];
         this.dropdownConfigValue = JSON.parse(this.container.dataset.dropdownConfigValue) || {};
         this.readOnlyConfigValue = JSON.parse(this.container.dataset.readOnlyConfigValue) || {};
+        this.saveCommandConfigValue = JSON.parse(this.container.dataset.saveCommandConfigValue) || {};
         this.originalOptionsValue = JSON.parse(this.container.dataset.originalOptionsValue) || {};
 
         this.ace = {
@@ -130,6 +130,7 @@ class CustomCodeEditor extends ClassEventsES6{
             defaultMode: this.modeValue,
             modes: this.modesValue,
             options: this.optionsValue,
+            saveCommandConfig: this.saveCommandConfigValue,
             saveValue: {}
         }
 
@@ -200,14 +201,20 @@ class CustomCodeEditor extends ClassEventsES6{
      * To let user extend beforeInit method
      */
     beforeInit(){
-
+        const beforeInitEvent = new CustomEvent('customCodeEditor:beforeInit', {
+            detail: this
+        });
+        window.dispatchEvent(beforeInitEvent);
     }
 
     /**
      * To let user extend afterInit method
      */
     afterInit(){
-
+        const afterInitEvent = new CustomEvent('customCodeEditor:afterInit', {
+            detail: this
+        });
+        window.dispatchEvent(afterInitEvent);
     }
 
     /**
@@ -521,7 +528,15 @@ class CustomCodeEditor extends ClassEventsES6{
         let snippet = this.getSnippet(name);
         let selected = null;
 
-        this.setSnippet(snippet)
+        /**
+         * Disable Snippet Array
+         * @type {Any[]}
+         */
+        let checkDisableSnippet = this.ace.modes.filter(val => val.disableSnippet === name);
+
+        if(checkDisableSnippet.length === 0) {
+            this.beautifyCode(snippet)
+        }
 
         // Find the template for replace the code area
         const find = this.editor.find('@code-here', {
@@ -569,11 +584,11 @@ class CustomCodeEditor extends ClassEventsES6{
 
     /**
      * Set snippet value to editor
-     * @param {string} snippet
+     * @param {string} code
      */
-    setSnippet(snippet){
+    beautifyCode(code){
         let beautify = ace.require('ace/ext/beautify');
-        this.editor.setValue(snippet);
+        this.editor.setValue(code);
         beautify.beautify(this.editor.session);
     }
 
@@ -917,8 +932,8 @@ class CustomCodeEditor extends ClassEventsES6{
      * @param {string | null} code
      */
     setValue(mode, code){
-        this.editor.setValue(code || '')
         this.setMode(mode)
+        this.beautifyCode(code || '');
         this.textarea.value = this.stringifyJSON({
             mode,
             code: code || ''
@@ -942,8 +957,8 @@ class CustomCodeEditor extends ClassEventsES6{
         this.editor.commands.addCommand({
             name: 'saveNewCode',
             bindKey: {
-                win: (CustomCodeEditor.has(this.ace, 'config.saveCommand.win')) ? this.ace.config["saveCommand"].win : 'Alt-Shift-S',
-                mac: (CustomCodeEditor.has(this.ace, 'config.saveCommand.mac')) ? this.ace.config["saveCommand"].mac : 'Option-Shift-S'
+                win: (CustomCodeEditor.has(this.ace, 'saveCommandConfig.win')) ? this.ace["saveCommandConfig"].win : 'Alt-Shift-S',
+                mac: (CustomCodeEditor.has(this.ace, 'saveCommandConfig.mac')) ? this.ace["saveCommandConfig"].mac : 'Option-Shift-S'
             },
             exec: function (editor) {
                 that.originalValue.code(editor.getSelectedText());
@@ -956,7 +971,6 @@ class CustomCodeEditor extends ClassEventsES6{
     /**
      * Editor on change events
      * @param {Event} _event
-     * @param {boolean} active
      */
     onChange(_event){
         let value = this.getValue()

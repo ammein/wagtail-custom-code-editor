@@ -242,6 +242,25 @@ class WidgetTestCase(TestCase):
         # Check if push modes is the same as defaultMode
         self.assertEqual(total_checked_mode, 1, f"Total checked modes not strictly matched to one mode: {widget.mode}")
 
+    def test_if_disableSnippets_is_append(self):
+        from wagtail_custom_code_editor.settings import wagtail_custom_code_editor_settings
+        data = self._get_init_options()
+        modes = [
+                {
+                    "name": "html",
+                    "disableSnippets": True,
+                }
+            ]
+        data.update({
+            "modes": modes
+        })
+
+        widget = CustomCodeEditorWidget(**data)
+        default_modes = list(
+            {d['name']: d for d in
+             getattr(wagtail_custom_code_editor_settings, "MODES") + modes}.values())
+        self.assertCountEqual(widget.modes, default_modes)
+
     def test_check_static_extension(self):
         from django.contrib.staticfiles import finders
         from wagtail_custom_code_editor.files import EXTENSIONS

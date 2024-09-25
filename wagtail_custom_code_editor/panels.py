@@ -22,6 +22,7 @@ class CustomCodeEditorPanel(FieldPanel):
             "enable_modes": kwargs.pop('enable_modes', False),
             "dropdown_config": kwargs.pop('dropdown_config', None),
             "read_only_config": kwargs.pop('read_only_config', None),
+            "save_command_config": kwargs.pop('save_command_config', None),
             "options": kwargs.pop('options', None),
             "modes": kwargs.pop('modes', None),
             "attrs": kwargs.pop('attrs', None)
