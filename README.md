@@ -24,6 +24,10 @@ This field uses the open-source Ace Editor library that you may found here [Ace 
 - [Extend JS Functionality](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/extend-functionality.md)
 
 ## Install
+Simply install in your project:
+```shell
+pip install wagtail-custom-code-editor
+```
 
 In your settings, add the package in `INSTALLED_APPS`:
 ```python
