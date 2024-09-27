@@ -1,5 +1,3 @@
-from getfiles import modesfrom getfiles import modes
-
 # Change Modes
 
 ## Table of contents
