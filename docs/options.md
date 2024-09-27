@@ -2,7 +2,7 @@
 
 ## Table of contents
 - [Default Options](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md#default-options)
-- [Copy & Paste Options](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md#copy-%26-paste-options)
+- [Copy & Paste Options](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md#copy--paste-options)
 - [Reset Options](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md#reset-options)
 
 ### Default Options
@@ -27,26 +27,26 @@ attrs=None
 ```
 
 - `mode` : `<str>`
-> Set default mode when code editor appear.
+> Set default mode when code editor appear. Default is `html`.
 - `theme` : `<str>` 
-> Set default theme. See [list of themes](https://github.com/ajaxorg/ace-builds/blob/master/src/ext-themelist.js#L9).
+> Set default theme. Default is `chrome`. See [list of themes](https://github.com/ajaxorg/ace-builds/blob/master/src/ext-themelist.js#L9).
 - `width` : `<str>` 
-> Width of Ace Editor
+> Width of Ace Editor. Default is `100%`.
 - `height` : `<str>` 
-> Height of Ace Editor
+> Height of Ace Editor. Default is `500px`.
 - `font_size` : `<str or None>`
 > Font size of ace editor
 - `keybinding` : `<str or None>`
-> Type of keybinding option for Ace Editor
+> Type of keybinding option for Ace Editor. You must insert the value without `keybinding-` and `.js` into `keybinding` value. Ex: `keybinding="emacs"`.
 - `useworker` : `<bool>` 
-> Turn On/Off for Ace Editor either to use Worker or not (Worker only works on certain mode. Check here).
+> Turn On/Off for Ace Editor either to use Worker or not (Worker only works on certain mode. [Check here to see which mode supports worker](https://github.com/ajaxorg/ace-builds/tree/master/src)). Default is `True`.
 - `extensions` : `<List[str] or str or None>` 
 > Ace Editor extensions to use (All extensions is used by default). You must insert the value without `ext-` and `.js` . Ex: `extensions=["hardwrap", "keybinding_menu", "linking"]`. Check [list of extensions](https://github.com/ajaxorg/ace/tree/master/src/ext).
 - `enable_options` : `<bool>` 
-> Turn On/Off for Ace Editor Options Configurations that appear as a drawer on the right container.
+> Turn On/Off for Ace Editor Options Configurations that appear as a drawer on the right container. Default is `True`.
 - `enable_modes` : `<bool>` 
-> Turn On/Off for Ace Editor change mode feature when clicking the dropdown.
-- `dropdownConfig` : `<Dict[str, str] or None>`
+> Turn On/Off for Ace Editor change mode feature when clicking the dropdown. Default is `False`.
+- `dropdown_config` : `<Dict[str, str] or None>`
 > CSS Config for Dropdown.
 ```python
 dropdown_config={
@@ -63,7 +63,7 @@ dropdown_config={
     "backgroundColor": "<string>"
 }
 ```
-- `readOnlyConfig` : `<Dict[str, str] or None>`
+- `read_only_config` : `<Dict[str, str] or None>`
 > CSS Config for Read Only container.
 ```python
 read_only_config={
@@ -80,8 +80,15 @@ read_only_config={
     "backgroundColor": "<string>"
 }
 ```
-- `saveCommandConfig` : `<Dict[str, str] or None>`
+- `save_command_config` : `<Dict[str, str] or None>`
 > Save Command Keys for mac & windows when use switch mode. All ace editor [keyboard shortcuts here](https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts)
+```python
+# Default Value
+save_command_config={
+    "win": "Alt-Shift-S",
+    "mac": "Option-Shift-S",
+}
+```
 - `options` : `<Dict[str, Any] or str or None>`
 > Override existing Ace Editor Options using key and value. Ex: `options=dict(readOnly=True, cursorStyle="smooth", printMarginColumn=100, showFoldWidgets=True, printMargin=50)`
 - `modes` : `<List[Dict[str, str]] or None>`

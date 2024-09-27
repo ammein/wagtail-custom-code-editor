@@ -39,7 +39,8 @@ WAGTAIL_CUSTOM_CODE_EDITOR = {
 ```
 #### Modes Properties
 - `title` - You can set any title name you want for specific mode
-- `name` - (CASE SENSITIVE) You must set the name of the mode for Ace Editor to set appropriate mode. You can see list of latest [modes here](https://github.com/ajaxorg/ace/tree/master/src/mode)
+- `name` - (CASE SENSITIVE) You must set the name of the mode for Ace Editor to set appropriate mode. You can see list of latest [modes here](https://github.com/ajaxorg/ace/tree/master/src/mode).
+> You must insert the value for `name` without `mode-` and `.js`. 
 - `snippet` - This is where your existing code will be replaced by this snippet value.
 - `disableSnippet` - You can set this key using boolean value if you want to disable the snippet on specific mode's name.
 - `@code-here` - If you notice this from example above, any existing code will be placed on `@code-here` placement anywhere in the snippet texts. Useful if you wish retain the same value when switching modes.
