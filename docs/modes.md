@@ -1,9 +1,9 @@
 # Change Modes
 
 ## Table of contents
-- [Modes Config](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md#modes-config)
-- [Save Highlight Switching Modes](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md#save-highlight-switching-modes)
-- [Override / Extend Modes](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md#override--extend-modes)
+- [Modes Config](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/modes.md#modes-config)
+- [Save Highlight Switching Modes](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/modes.md#save-highlight-switching-modes)
+- [Override / Extend Modes](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/modes.md#override--extend-modes)
 
 ### Modes Config
 You must set `enable_modes` to `True` to use change modes feature like this:
