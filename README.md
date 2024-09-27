@@ -19,6 +19,8 @@ This field uses the open-source Ace Editor library that you may found here [Ace 
 ## Documentation
 - [Settings](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/settings.md)
 - [Widget Options](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md)
+- [Change Modes](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/modes.md)
+- [Django Admin](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/django-admin.md)
 
 ## Install
 
