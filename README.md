@@ -66,6 +66,19 @@ class MyPage(Page):
     ]
 ```
 
+#### Block
+You can also add as `CustomCodeEditorBlock` like this:
+
+```python
+from wagtail_custom_code_editor.blocks import CustomCodeEditorBlock
+from wagtail.blocks import (
+    StructBlock,
+)
+
+class CodeBlock(StructBlock):
+    code = CustomCodeEditorBlock()
+```
+
 #### Frontend
 You can easily grab the JSON value like this:
 ```html
