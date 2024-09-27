@@ -119,6 +119,11 @@ class CustomCodeEditor extends ClassEventsES6{
         this.themeValue = this.container.dataset.themeValue;
         this.modeValue = this.container.dataset.modeValue;
         this.modesValue = JSON.parse(this.container.dataset.modesValue) || [];
+        this.editorValue = {
+            "fontSize": this.container.dataset.fontSize.length > 0 ? this.container.dataset.fontSize : null,
+            "height": this.container.dataset.heightValue.length > 0 ? this.container.dataset.heightValue : null,
+            "width": this.container.dataset.widthValue.length > 0 ? this.container.dataset.widthValue : null
+        }
         this.optionsValue = JSON.parse(this.container.dataset.optionsValue) || [];
         this.dropdownConfigValue = JSON.parse(this.container.dataset.dropdownConfigValue) || {};
         this.readOnlyConfigValue = JSON.parse(this.container.dataset.readOnlyConfigValue) || {};
@@ -131,12 +136,14 @@ class CustomCodeEditor extends ClassEventsES6{
             modes: this.modesValue,
             options: this.optionsValue,
             saveCommandConfig: this.saveCommandConfigValue,
-            saveValue: {}
+            saveOptions: {},
+            saveValue: null
         }
 
         let that = this;
 
         this.originalValue = {
+            saveCode: null,
             get code(){
                 let value = JSON.parse(that.textarea.value)
 
@@ -149,15 +156,12 @@ class CustomCodeEditor extends ClassEventsES6{
                 return value.mode
             },
 
-            set code(val){
-                return val;
+            set code(val) {
+                this.saveCode = val;
             },
 
-            set mode(val){
-                if (/[\\/]\w+$/g.test(val)) {
-                    return val.match(/(?!([\/\\]))\w*$/g)[0]
-                }
-                return val;
+            reset() {
+                this.saveCode = null;
             }
         }
 
@@ -229,6 +233,12 @@ class CustomCodeEditor extends ClassEventsES6{
             this.container.querySelector('.text-mode').innerText = this.getValue() ? this.getModeTitle(this.getValue().mode) : this.getModeTitle(this.originalValue.mode);
         }
 
+        this.editorConfig();
+
+        if(this.container.querySelectorAll('input.input-options').length > 0){
+            this.checkOptions();
+        }
+
         // Set original value
         if(this.originalValue.code){
             this.trigger('switchMode', false);
@@ -244,10 +254,6 @@ class CustomCodeEditor extends ClassEventsES6{
         }
 
         this.active = true;
-
-        if(this.container.querySelectorAll('input.input-options').length > 0){
-            this.checkOptions();
-        }
 
         if(this.container.querySelector('.dropdown')) {
             this.dropdownConfig();
@@ -475,6 +481,8 @@ class CustomCodeEditor extends ClassEventsES6{
         this.trigger('switchMode', false);
         let val = this.getValue();
         this.setValue(val.mode, val.code);
+        // Reset save code if any
+        this.originalValue.reset();
     }
 
     /**
@@ -526,7 +534,7 @@ class CustomCodeEditor extends ClassEventsES6{
     editorMode(name){
         this.editor.session.setMode('ace/mode/' + name);
         let snippet = this.getSnippet(name);
-        let selected = null;
+        let selected = null
 
         /**
          * Disable Snippet Array
@@ -553,8 +561,8 @@ class CustomCodeEditor extends ClassEventsES6{
         }
 
         // If found
-        if (find && selected && this.originalValue.code) {
-            this.editor.replace(this.originalValue.code);
+        if (find && selected && (this.originalValue.saveCode || this.originalValue.code)) {
+            this.editor.replace(this.originalValue.saveCode || this.originalValue.code);
         } else {
             this.editor.replace('');
         }
@@ -631,10 +639,10 @@ class CustomCodeEditor extends ClassEventsES6{
                             }
                             if (!input.hasAttribute('data-default-value') && option.value === that.editor.getOptions()[input.name].toString()) {
                                 option.setAttribute('selected', true.toString())
-                                that.ace.saveValue[input.name] = option.value.toString()
+                                that.ace.saveOptions[input.name] = option.value.toString()
                             } else if (input.hasAttribute('data-default-value')) {
                                 input.value = defaultVal;
-                                that.ace.saveValue[input.name] = defaultVal.toString();
+                                that.ace.saveOptions[input.name] = defaultVal.toString();
                                 that.editor.setOption(input.name, defaultVal)
                             }
                         })
@@ -645,10 +653,10 @@ class CustomCodeEditor extends ClassEventsES6{
                     value = (that.editor.getOptions().hasOwnProperty(input.name)) ? that.editor.getOptions()[input.name] : 0
                     if (!input.hasAttribute('data-default-value')) {
                         input.setAttribute('value', value);
-                        that.ace.saveValue[input.name] = Number(that.editor.getOptions()[input.name]);
+                        that.ace.saveOptions[input.name] = Number(that.editor.getOptions()[input.name]);
                     } else if (input.hasAttribute('data-default-value')) {
                         input.setAttribute('value', input.dataset["defaultValue"]);
-                        that.ace.saveValue[input.name] = Number(input.dataset["defaultValue"]);
+                        that.ace.saveOptions[input.name] = Number(input.dataset["defaultValue"]);
                         that.editor.setOption(input.name, Number(input.dataset["defaultValue"]));
                     }
                     break;
@@ -657,10 +665,10 @@ class CustomCodeEditor extends ClassEventsES6{
                     value = (that.editor.getOptions().hasOwnProperty(input.name)) ? that.editor.getOptions()[input.name] : 0;
                     if (!input.hasAttribute('data-default-value')) {
                         input.setAttribute('value', value);
-                        that.ace.saveValue[input.name] = parseFloat(that.editor.getOptions()[input.name]);
+                        that.ace.saveOptions[input.name] = parseFloat(that.editor.getOptions()[input.name]);
                     } else if (input.hasAttribute('data-default-value')) {
                         input.setAttribute('value', input.dataset["defaultValue"]);
-                        that.ace.saveValue[input.name] = parseFloat(input.dataset["defaultValue"]);
+                        that.ace.saveOptions[input.name] = parseFloat(input.dataset["defaultValue"]);
                         that.editor.setOption(input.name, parseFloat(input.dataset["defaultValue"]));
                     }
                     break;
@@ -668,16 +676,16 @@ class CustomCodeEditor extends ClassEventsES6{
                 case (/checkbox/g).test(input.type):
                     if (!input.hasAttribute('data-default-value') && that.editor.getOptions().hasOwnProperty(input.name) && Boolean(that.editor.getOptions()[input.name])) {
                         input.setAttribute('checked', Boolean(that.editor.getOptions()[input.name]).toString())
-                        that.ace.saveValue[input.name] = Boolean(that.editor.getOptions()[input.name])
+                        that.ace.saveOptions[input.name] = Boolean(that.editor.getOptions()[input.name])
                         return;
                     } else if (input.hasAttribute('data-default-value')) {
                         if (JSON.parse(input.dataset["defaultValue"])) {
                             input.setAttribute('checked', JSON.parse(input.dataset["defaultValue"]))
                         }
-                        that.ace.saveValue[input.name] = JSON.parse(input.dataset["defaultValue"])
+                        that.ace.saveOptions[input.name] = JSON.parse(input.dataset["defaultValue"])
                         that.editor.setOption(input.name, JSON.parse(input.dataset["defaultValue"]))
                     } else {
-                        that.ace.saveValue[input.name] = Boolean(that.editor.getOptions()[input.name])
+                        that.ace.saveOptions[input.name] = Boolean(that.editor.getOptions()[input.name])
                     }
                     break;
             }
@@ -695,26 +703,26 @@ class CustomCodeEditor extends ClassEventsES6{
         Array.from(this.container.querySelectorAll('input.input-options,select.input-options')).forEach((dom) => {
             switch (true) {
                 case (/checkbox/g).test(dom.type):
-                    if (JSON.parse(dom.checked) !== that.ace.saveValue[dom.name]) {
+                    if (JSON.parse(dom.checked) !== that.ace.saveOptions[dom.name]) {
                         value[dom.name] = dom.checked
                     }
                     break;
 
                 case (/range/g).test(dom.type):
-                    if (parseFloat(dom.value) !== that.ace.saveValue[dom.name]) {
+                    if (parseFloat(dom.value) !== that.ace.saveOptions[dom.name]) {
                         value[dom.name] = parseFloat(dom.value)
                     }
                     break;
 
                 case (/select/g).test(dom.type):
                     let getValue = dom.options[dom.selectedIndex].value;
-                    if (getValue !== that.ace.saveValue[dom.name]) {
+                    if (getValue !== that.ace.saveOptions[dom.name]) {
                         value[dom.name] = getValue;
                     }
                     break;
 
                 case (/number/g).test(dom.type):
-                    if (parseFloat(dom.value) !== that.ace.saveValue[dom.name]) {
+                    if (parseFloat(dom.value) !== that.ace.saveOptions[dom.name]) {
                         value[dom.name] = parseFloat(dom.value)
                     }
                     break;
@@ -760,45 +768,45 @@ class CustomCodeEditor extends ClassEventsES6{
         Array.from(this.container.querySelectorAll('input.input-options,select.input-options')).forEach((dom) => {
             switch (true) {
                 case (/checkbox/g).test(dom.type):
-                    if (JSON.parse(dom.checked) !== that.ace.saveValue[dom.name]) {
-                        dom.checked = JSON.parse(that.ace.saveValue[dom.name])
+                    if (JSON.parse(dom.checked) !== that.ace.saveOptions[dom.name]) {
+                        dom.checked = JSON.parse(that.ace.saveOptions[dom.name])
                         that.editor.setOption(dom.name, dom.checked)
                     }
                     break;
 
                 case (/range/g).test(dom.type):
-                    if (parseFloat(dom.value) !== that.ace.saveValue[dom.name]) {
-                        dom.value = that.ace.saveValue[dom.name]
+                    if (parseFloat(dom.value) !== that.ace.saveOptions[dom.name]) {
+                        dom.value = that.ace.saveOptions[dom.name]
                         that.editor.setOption(dom.name, dom.value)
                     }
                     break;
 
                 case (/select/g).test(dom.type):
                     let getValue = dom.options[dom.selectedIndex].value;
-                    if (getValue !== that.ace.saveValue[dom.name]) {
+                    if (getValue !== that.ace.saveOptions[dom.name]) {
                         // Set Editor Option Value
-                        switch (this.ace.saveValue[dom.name]) {
+                        switch (this.ace.saveOptions[dom.name]) {
                             case "true":
-                                that.editor.setOption(dom.name, JSON.parse(that.ace.saveValue[dom.name]))
+                                that.editor.setOption(dom.name, JSON.parse(that.ace.saveOptions[dom.name]))
                                 break;
 
                             case "false":
-                                that.editor.setOption(dom.name, JSON.parse(that.ace.saveValue[dom.name]))
+                                that.editor.setOption(dom.name, JSON.parse(that.ace.saveOptions[dom.name]))
                                 break;
 
                             default:
-                                that.editor.setOption(dom.name, that.ace.saveValue[dom.name])
+                                that.editor.setOption(dom.name, that.ace.saveOptions[dom.name])
                         }
                         // Set default on select html
-                        dom.selectedIndex = Array.from(dom.options).filter(val => val.value === that.ace.saveValue[dom.name]).reduce((val, next) => next, -1).index
+                        dom.selectedIndex = Array.from(dom.options).filter(val => val.value === that.ace.saveOptions[dom.name]).reduce((val, next) => next, -1).index
 
                     }
                     break;
 
                 case (/number/g).test(dom.type):
-                    if (parseFloat(dom.value) !== that.ace.saveValue[dom.name]) {
-                        dom.value = that.ace.saveValue[dom.name]
-                        that.editor.setOption(dom.name, that.ace.saveValue[dom.name])
+                    if (parseFloat(dom.value) !== that.ace.saveOptions[dom.name]) {
+                        dom.value = that.ace.saveOptions[dom.name]
+                        that.editor.setOption(dom.name, that.ace.saveOptions[dom.name])
                     }
                     break;
             }
@@ -807,7 +815,7 @@ class CustomCodeEditor extends ClassEventsES6{
     }
 
     /**
-     * Dropdown Config
+     * Set Dropdown configurations
      */
     dropdownConfig() {
         if (CustomCodeEditor.has(this.dropdownConfigValue, 'position.top')) {
@@ -848,6 +856,9 @@ class CustomCodeEditor extends ClassEventsES6{
 
     }
 
+    /**
+     * Set Read Only Container configurations
+     */
     readOnlyConfig() {
         if (CustomCodeEditor.has(this.readOnlyConfigValue, 'position.top')) {
             this.container.querySelector('.switch').style.top = this.readOnlyConfigValue.position.top
@@ -885,6 +896,25 @@ class CustomCodeEditor extends ClassEventsES6{
             this.container.querySelector('.switch').style.backgroundColor = this.readOnlyConfigValue.backgroundColor
         }
 
+    }
+
+    /**
+     * Set Editor configurations
+     */
+    editorConfig(){
+        if (CustomCodeEditor.has(this.editorValue, 'fontSize')) {
+            this.editor.setOptions({
+                "fontSize": this.editorValue.fontSize
+            })
+        }
+
+        if (CustomCodeEditor.has(this.editorValue, 'height')) {
+            this.container.querySelector('.code-snippet-wrapper').style.height = this.editorValue.height;
+        }
+
+        if (CustomCodeEditor.has(this.editorValue, 'width')) {
+            this.container.querySelector('.code-snippet-wrapper').style.width = this.editorValue.width;
+        }
     }
 
     /**
@@ -933,7 +963,7 @@ class CustomCodeEditor extends ClassEventsES6{
      */
     setValue(mode, code){
         this.setMode(mode)
-        this.beautifyCode(code || '');
+        this.editor.setValue(code || '');
         this.textarea.value = this.stringifyJSON({
             mode,
             code: code || ''
@@ -961,8 +991,7 @@ class CustomCodeEditor extends ClassEventsES6{
                 mac: (CustomCodeEditor.has(this.ace, 'saveCommandConfig.mac')) ? this.ace["saveCommandConfig"].mac : 'Option-Shift-S'
             },
             exec: function (editor) {
-                that.originalValue.code(editor.getSelectedText());
-                that.originalValue.mode(that.getMode());
+                that.originalValue.code = editor.getSelectedText();
             },
             readOnly: false
         });

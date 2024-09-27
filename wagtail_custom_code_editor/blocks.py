@@ -1,7 +1,6 @@
 from __future__ import annotations
 from django import forms
 from wagtail.blocks import FieldBlock
-from django.utils.translation import gettext_lazy as _
 from .validators import CustomCodeEditorDecoder
 from .widgets import CustomCodeEditorWidget
 
@@ -9,14 +8,10 @@ from .widgets import CustomCodeEditorWidget
 class CustomCodeEditorBlock(FieldBlock):
     def __init__(
             self,
-            required=True,
-            help_text: str = None,
-            disabled=False,
-            label=_('Custom Code Editor'),
             mode=None,
             theme=None,
             width="100%",
-            height="300px",
+            height="500px",
             font_size=None,
             keybinding=None,
             useworker=True,
@@ -50,8 +45,7 @@ class CustomCodeEditorBlock(FieldBlock):
             "attrs": attrs,
             "block": True
         }
-        self.field = forms.JSONField(widget=CustomCodeEditorWidget(**self._ace_options), help_text=help_text,
-                                     required=required, decoder=CustomCodeEditorDecoder, disabled=disabled, label=label)
+        self.field = forms.JSONField(widget=CustomCodeEditorWidget(**self._ace_options), decoder=CustomCodeEditorDecoder, **kwargs)
         super().__init__(**kwargs)
 
     class Meta:

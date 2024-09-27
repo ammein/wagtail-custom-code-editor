@@ -23,7 +23,7 @@ class CustomCodeEditorWidget(widgets.Widget):
             mode="html",
             theme="chrome",
             width="100%",
-            height="300px",
+            height="500px",
             font_size=None,
             keybinding=None,
             useworker=True,
@@ -156,6 +156,9 @@ class CustomCodeEditorWidget(widgets.Widget):
             attrs['data-controller'] = "custom-code-editor"
         attrs['data-mode-value'] = self.mode
         attrs['data-theme-value'] = self.theme
+        attrs['data-width-value'] = self.width
+        attrs['data-height-value'] = self.height
+        attrs['data-font-size'] = self.font_size or ""
         attrs['data-modes-value'] = json.dumps(self.modes)
         attrs['data-options-value'] = json.dumps(self.options)
         attrs['data-dropdown-config-value'] = json.dumps(self.dropdown_config)

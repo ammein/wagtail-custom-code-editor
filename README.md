@@ -18,6 +18,7 @@ This field uses the open-source Ace Editor library that you may found here [Ace 
 
 ## Documentation
 - [Settings](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/settings.md)
+- [Widget Options](https://github.com/ammein/wagtail-custom-code-editor/blob/main/docs/options.md)
 
 ## Install
 
@@ -41,6 +42,7 @@ class MyPage(Page):
     code = CustomCodeEditorField()
     ...
 ```
+> The field is using [Django's JSONField](https://docs.djangoproject.com/en/5.1/ref/models/fields/#django.db.models.JSONField)
 
 #### Panel
 Then you add `CustomCodeEditorPanel` like this:
