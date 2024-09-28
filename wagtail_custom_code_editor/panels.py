@@ -13,7 +13,7 @@ class CustomCodeEditorPanel(FieldPanel):
             "mode": kwargs.pop('mode', 'html'),
             "theme": kwargs.pop('theme', 'chrome'),
             "width": kwargs.pop('width', "100%"),
-            "height": kwargs.pop('height', '300px'),
+            "height": kwargs.pop('height', '500px'),
             "font_size": kwargs.pop('font_size', None),
             "keybinding": kwargs.pop('keybinding', None),
             "useworker": kwargs.pop('useworker', None),
