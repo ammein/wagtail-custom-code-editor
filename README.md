@@ -95,4 +95,4 @@ The JSON returns this two key value:
 
 ## License
 
-Wagtail-Geo-Widget is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+wagtail-custom-code-editor is released under the [MIT License](http://www.opensource.org/licenses/MIT).
