@@ -11,7 +11,7 @@ class EditHandlersTestCase(SimpleTestCase):
         self.assertEqual(panel.ace_options['theme'], 'chrome')
         self.assertEqual(panel.ace_options['mode'], 'html')
         self.assertEqual(panel.ace_options['width'], '100%')
-        self.assertEqual(panel.ace_options['height'], '300px')
+        self.assertEqual(panel.ace_options['height'], '500px')
         self.assertEqual(panel.ace_options['enable_options'], True)
         self.assertEqual(panel.ace_options['enable_modes'], False)
 
@@ -21,7 +21,7 @@ class EditHandlersTestCase(SimpleTestCase):
         self.assertEqual(panel.ace_options['theme'], 'monokai')
         self.assertEqual(panel.ace_options['mode'], 'glsl')
         self.assertEqual(panel.ace_options['width'], '100%')
-        self.assertEqual(panel.ace_options['height'], '300px')
+        self.assertEqual(panel.ace_options['height'], '500px')
         self.assertEqual(panel.ace_options['enable_options'], True)
         self.assertEqual(panel.ace_options['enable_modes'], True)
 
