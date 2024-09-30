@@ -1,4 +1,4 @@
-// noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
+// noinspection JSUnusedGlobalSymbols,JSUnresolvedReference,DuplicatedCode
 /* global, ClipboardJS, AceEditor */
 // Credited to https://stackoverflow.com/a/56612753
 class ClassEventsES6 {
@@ -251,6 +251,11 @@ class CustomCodeEditor extends ClassEventsES6{
             this.trigger('switchMode', true);
             this.editorMode(this.ace.defaultMode)
             this.editor.clearSelection();
+        }
+
+        // If `enable_modes=False`. Let editor start typing when changing modes is disabled.
+        if (!this.container.querySelector('.dropdown#switch-modes')) {
+            this.trigger('switchMode', false);
         }
 
         this.active = true;

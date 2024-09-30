@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wagtail-custom-code-editor"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
-    "django>=4.2",  # Replace "X.Y" as appropriate
+    "django>=4.2",
 ]
 description = "An Ace Editor that works in Wagtail CMS"
 readme = "README.md"

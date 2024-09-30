@@ -1,7 +1,7 @@
 {% load wagtailadmin_tags custom_code_editor_helper %}
 <div data-custom-code-editor-target="container" data-id="{{ widget.attrs.id }}" class="editor-container editor-{{ widget.attrs.id }}" {% for k, v in widget.attrs.items %}{{k}}="{{v}}"{% endfor %}>
   {% if widget.enable_modes %}
-  <div class="dropdown">
+  <div class="dropdown" id="switch-modes">
     <button class="button-dropdown result">{% if not widget.django_admin %}{% icon name="arrow-down" classname="icon-ace" title="Modes" %}{% else %}<svg class="icon-ace" id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFFFFF"><defs><style>.cls-1{fill:none;stroke:#FFFFFF;stroke-linecap:round;stroke-linejoin:round;stroke-width:2.00px;}</style></defs><polyline class="cls-1" points="21 7.59 12 16.41 3 7.59"></polyline></svg>{% endif %}<span class="text-mode"></span></button>
     <div class="dropdown-content" style="display: none;">
       <input type="text" placeholder="Search..." class="my-input mode-search search-bar">
