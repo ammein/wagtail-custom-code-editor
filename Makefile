@@ -14,7 +14,12 @@ superuser: ## Create super user
 	DJANGO_SUPERUSER_USERNAME=admin DJANGO_SUPERUSER_EMAIL=mail@example.com DJANGO_SUPERUSER_PASSWORD=admin python3 ./tests/testapp/manage.py createsuperuser --noinput
 
 init: clean-pyc ## Install dependencies and initialise for development.
-	pip3 install -e .[testing]
+	pip3 install -e .[testing]; \
+	if python -c "import setuptools" &>/dev/null; then \
+	  	echo "Skipped setuptools" \
+	else \
+	  	pip install setuptools; \
+  	fi; \
 	python3 ./tests/testapp/manage.py migrate --noinput
 
 clean-pyc: ## Remove Python file artifacts.
@@ -23,7 +28,17 @@ clean-pyc: ## Remove Python file artifacts.
 	find . -name '*~' -exec rm -f {} +
 
 publish: ## Publishes a new version to pypi. See: https://docs.djangoproject.com/en/5.2/intro/reusable-apps/
-	rm dist/* && python3 setup.py sdist && twine upload dist/* && echo 'Success! Go to https://pypi.python.org/pypi/wagtail-custom-code-editor and check that all is well.'
+	@if [[ -d "./dist/" ]]; then \
+  		rm dist/*; \
+  	fi; \
+	python3 setup.py sdist; \
+	if which twine &> /dev/null; then \
+  		twine upload dist/*; \
+  	else \
+  	  	pip install twine; \
+  	  	twine upload dist/*; \
+  	fi; \
+	echo 'Success! Go to https://pypi.python.org/pypi/wagtail-custom-code-editor and check that all is well.'
 
 static: ## Push Static Files to test
 	python3 ./tests/testapp/manage.py collectstatic --noinput
