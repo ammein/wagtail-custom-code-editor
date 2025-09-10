@@ -10,6 +10,9 @@ start: ## Starts the development server.
 test: ## Test the project.
 	cd ./tests/testapp && python3 manage.py test
 
+superuser: ## Create super user
+	DJANGO_SUPERUSER_USERNAME=admin DJANGO_SUPERUSER_EMAIL=mail@example.com DJANGO_SUPERUSER_PASSWORD=admin python3 ./tests/testapp/manage.py createsuperuser --noinput
+
 init: clean-pyc ## Install dependencies and initialise for development.
 	pip3 install -e .[testing]
 	python3 ./tests/testapp/manage.py migrate --noinput
@@ -19,7 +22,7 @@ clean-pyc: ## Remove Python file artifacts.
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 
-publish: ## Publishes a new version to pypi.
+publish: ## Publishes a new version to pypi. See: https://docs.djangoproject.com/en/5.2/intro/reusable-apps/
 	rm dist/* && python3 setup.py sdist && twine upload dist/* && echo 'Success! Go to https://pypi.python.org/pypi/wagtail-custom-code-editor and check that all is well.'
 
 static: ## Push Static Files to test

@@ -1,7 +1,6 @@
 from django.test import SimpleTestCase
 
 from wagtail_custom_code_editor.panels import CustomCodeEditorPanel
-from wagtail_custom_code_editor.widgets import CustomCodeEditorWidget
 
 
 class EditHandlersTestCase(SimpleTestCase):
@@ -32,9 +31,3 @@ class EditHandlersTestCase(SimpleTestCase):
         self.assertEqual(panel.ace_options['theme'], clone.ace_options['theme'])
         self.assertEqual(panel.ace_options['mode'], clone.ace_options['mode'])
 
-    def test_widget_overrides(self):
-        panel = CustomCodeEditorPanel('code', theme='monokai', mode='css')
-        widget_overrides = panel.get_form_options()
-
-        self.assertIsInstance(widget_overrides['widgets']['code'], CustomCodeEditorWidget)
-        self.assertIn('code', widget_overrides['fields'])

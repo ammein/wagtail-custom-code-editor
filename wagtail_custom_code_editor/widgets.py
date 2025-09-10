@@ -5,8 +5,8 @@ import json
 from typing import Dict, List, Any
 from django.utils.functional import cached_property
 from django.forms import Media, widgets
-from wagtail.widget_adapters import WidgetAdapter
-from wagtail.telepath import register
+from wagtail.admin.telepath.widgets import WidgetAdapter
+from wagtail.admin.telepath import register
 from .settings import wagtail_custom_code_editor_settings
 from .files import (
     EXTENSIONS,
