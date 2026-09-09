@@ -3,12 +3,12 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 name = "wagtail-custom-code-editor"
-version = "1.0.6"
+version = "1.0.7"
 dependencies = [
-    "django>=4.2",
-    "wagtail>=7.0"
+    "django>=5.2",
+    "wagtail>=8.0"
 ]
 description = "An Ace Editor that works in Wagtail CMS"
 readme = "README.md"
@@ -40,16 +40,16 @@ classifiers = [
     "Framework :: Wagtail :: 5",
     "Framework :: Wagtail :: 6",
     "Framework :: Wagtail :: 7",
+    "Framework :: Wagtail :: 8",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
 ]

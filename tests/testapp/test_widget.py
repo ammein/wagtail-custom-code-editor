@@ -108,7 +108,7 @@ class WidgetTestCase(TestCase):
         total_checked_mode = 0
 
         for media in widget.media._js:
-            valid = re.search(r'(?=mode-).*(?=.js)', media)
+            valid = re.search(r'(?=mode-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -150,7 +150,7 @@ class WidgetTestCase(TestCase):
         total_checked_mode = 0
 
         for media in widget.media._js:
-            valid = re.search(r'(?=mode-).*(?=.js)', media)
+            valid = re.search(r'(?=mode-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -201,7 +201,7 @@ class WidgetTestCase(TestCase):
         self.assertListEqual(widget.options, getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES"))
 
         for media in widget.media._js:
-            valid = re.search(r'(?=mode-).*(?=.js)', media)
+            valid = re.search(r'(?=mode-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -226,7 +226,7 @@ class WidgetTestCase(TestCase):
         total_checked_mode = 0
 
         for media in widget.media._js:
-            valid = re.search(r'(?=mode-).*(?=.js)', media)
+            valid = re.search(r'(?=mode-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -274,7 +274,7 @@ class WidgetTestCase(TestCase):
         total_checked_extensions = 0
 
         for media in widget.media._js:
-            valid = re.search(r'(?=ext-).*(?=.js)', media)
+            valid = re.search(r'(?=ext-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -305,7 +305,7 @@ class WidgetTestCase(TestCase):
         total_checked_extensions = 0
 
         for media in widget.media._js:
-            valid = re.search(r'(?=ext-).*(?=.js)', media)
+            valid = re.search(r'(?=ext-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -330,7 +330,7 @@ class WidgetTestCase(TestCase):
         total_checked_themes = 0
 
         for media in widget.media._js:
-            valid = re.search(r'(?=theme-).*(?=.js)', media)
+            valid = re.search(r'(?=theme-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -352,7 +352,7 @@ class WidgetTestCase(TestCase):
         total_checked_keybinding = 0
 
         for media in widget.media._js:
-            valid = re.search(r'(?=keybinding-).*(?=.js)', media)
+            valid = re.search(r'(?=keybinding-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -378,7 +378,7 @@ class WidgetTestCase(TestCase):
         self.assertTrue(widget.useworker)
 
         for media in widget.media._js:
-            valid = re.search(r'(?=worker-).*(?=.js)', media)
+            valid = re.search(r'(?=worker-).*(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/ace/%s.js' % valid.group())
@@ -404,7 +404,7 @@ class WidgetTestCase(TestCase):
         total_checked_js = 0
 
         for media in widget.media._js:
-            valid = re.search(r'custom-code-editor-controller(?=.js)', media)
+            valid = re.search(r'custom-code-editor-controller(?=.js)', media.path)
             if valid:
                 # Make sure static files is pushed
                 result = finders.find('wagtail_custom_code_editor/js/%s.js' % valid.group())
