@@ -1,8 +1,20 @@
 import json
 import re
+
+from django.forms.widgets import Script
 from django.test import TestCase, override_settings
+from django.templatetags.static import static
 
 from wagtail_custom_code_editor.widgets import CustomCodeEditorWidget
+
+
+def check_static(media):
+    # Since Django 8.0, Media for Widget has been attached to a new class called Script.
+    # And it has its own path property.
+    if isinstance(media, Script):
+        _media = media.__str__()
+        media = static(_media)
+    return media
 
 
 class WidgetTestCase(TestCase):
@@ -108,6 +120,7 @@ class WidgetTestCase(TestCase):
         total_checked_mode = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=mode-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -150,6 +163,7 @@ class WidgetTestCase(TestCase):
         total_checked_mode = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=mode-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -169,15 +183,15 @@ class WidgetTestCase(TestCase):
 
     @override_settings(WAGTAIL_CUSTOM_CODE_EDITOR={
         "MODES": [{
-                "title": "GLSL",
-                "name": "glsl",
-                "snippet": """#version 300 es
+            "title": "GLSL",
+            "name": "glsl",
+            "snippet": """#version 300 es
                 uniform float time;
                 void main() {
                     vec4 color = vec4(vec3(0.), 1.);
                     gl_FragColor = color;
                 }"""
-            }]
+        }]
     })
     def test_check_static_settings_modes(self):
         from django.contrib.staticfiles import finders
@@ -201,6 +215,7 @@ class WidgetTestCase(TestCase):
         self.assertListEqual(widget.options, getattr(wagtail_custom_code_editor_settings, "OPTIONS_TYPES"))
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=mode-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -226,6 +241,7 @@ class WidgetTestCase(TestCase):
         total_checked_mode = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=mode-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -246,11 +262,11 @@ class WidgetTestCase(TestCase):
         from wagtail_custom_code_editor.settings import wagtail_custom_code_editor_settings
         data = self._get_init_options()
         modes = [
-                {
-                    "name": "html",
-                    "disableSnippets": True,
-                }
-            ]
+            {
+                "name": "html",
+                "disableSnippets": True,
+            }
+        ]
         data.update({
             "modes": modes
         })
@@ -274,6 +290,7 @@ class WidgetTestCase(TestCase):
         total_checked_extensions = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=ext-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -305,6 +322,7 @@ class WidgetTestCase(TestCase):
         total_checked_extensions = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=ext-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -330,6 +348,7 @@ class WidgetTestCase(TestCase):
         total_checked_themes = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=theme-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -352,6 +371,7 @@ class WidgetTestCase(TestCase):
         total_checked_keybinding = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=keybinding-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -378,6 +398,7 @@ class WidgetTestCase(TestCase):
         self.assertTrue(widget.useworker)
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'(?=worker-).*(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
@@ -404,6 +425,7 @@ class WidgetTestCase(TestCase):
         total_checked_js = 0
 
         for media in widget.media._js:
+            media = check_static(media)
             valid = re.search(r'custom-code-editor-controller(?=.js)', media)
             if valid:
                 # Make sure static files is pushed
