@@ -284,8 +284,6 @@ class CustomCodeEditor extends ClassEventsES6{
         Array.from(this.container.querySelectorAll('input.range-slider__range')).forEach(input => input.addEventListener('change', that.sliderOnChange.bind(that)))
         // Number on change
         Array.from(this.container.querySelectorAll('input.number[type="number"]')).forEach(input => input.addEventListener('change', that.numberOnChange.bind(that)))
-        // Button options
-        this.container.querySelector('.button-options').addEventListener('click', this.toggleOptions.bind(this));
         // Toggle Modes
         if(this.container.querySelector('button.button-dropdown.result')) {
             this.container.querySelector('button.button-dropdown.result').addEventListener('click', this.toggleModes.bind(this));
@@ -299,6 +297,8 @@ class CustomCodeEditor extends ClassEventsES6{
             this.container.querySelector('button.switch').addEventListener('click', this.confirmMode.bind(this));
         }
         if(this.container.querySelector('div.options-config')) {
+            // Button Options
+            this.container.querySelector('.button-options').addEventListener('click', this.toggleOptions.bind(this));
             // Search Options
             this.container.querySelector('input[type="text"].search-bar.my-options').addEventListener('input', this.searchOptions.bind(this));
             // Copy to clipboard
@@ -322,8 +322,6 @@ class CustomCodeEditor extends ClassEventsES6{
         Array.from(this.container.querySelectorAll('input.range-slider__range')).forEach(input => input.removeEventListener('change', that.sliderOnChange.bind(that)))
         // Number on change
         Array.from(this.container.querySelectorAll('input.number[type="number"]')).forEach(input => input.removeEventListener('change', that.numberOnChange.bind(that)))
-        // Button options
-        this.container.querySelector('.button-options').removeEventListener('click', this.toggleOptions.bind(this));
         // Toggle Modes
         if(this.container.querySelector('button.button-dropdown.result')) {
             this.container.querySelector('button.button-dropdown.result').removeEventListener('click', this.toggleModes.bind(this));
@@ -339,6 +337,8 @@ class CustomCodeEditor extends ClassEventsES6{
             this.container.querySelector('button.switch').removeEventListener('click', this.confirmMode.bind(this));
         }
         if(this.container.querySelector('div.options-config')) {
+            // Button options
+            this.container.querySelector('.button-options').removeEventListener('click', this.toggleOptions.bind(this));
             // Search Options
             this.container.querySelector('input[type="text"].search-bar.my-options').removeEventListener('input', this.searchOptions.bind(this));
             // Copy to clipboard
